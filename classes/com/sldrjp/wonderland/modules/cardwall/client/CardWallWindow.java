@@ -68,7 +68,7 @@ public class CardWallWindow extends WindowSwing {
                           final int height, boolean decorated, Vector2f pixelScale, final CardWallCellClientState clientState)
             throws InstantiationException {
 
-        super(app, width, height, decorated, pixelScale);
+        super(app, Type.PRIMARY, width, height, decorated, pixelScale);
         logger.fine("CardWallWindow - width " + width + " height " +height);
         this.cell = cell;
 
