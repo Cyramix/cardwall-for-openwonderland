@@ -96,7 +96,7 @@ public class TestMasterPanel extends JFrame {
        JButton button = new JButton("config");
 
      private void buttonActionPerformed(java.awt.event.ActionEvent evt) {
-                     CardWallConfiguration configuration = new CardWallConfiguration(this, true);
+            CardWallConfiguration configuration = new CardWallConfiguration(this, true);
             configuration.setCardWallState(state);
             configuration.setVisible(true);
             if (configuration.isDirty()){

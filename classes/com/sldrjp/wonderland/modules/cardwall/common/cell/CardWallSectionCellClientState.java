@@ -32,6 +32,7 @@ public class CardWallSectionCellClientState implements StateConvertable, Seriali
     private int startColumn = -1;
     private int endColumn = -1;
     private String sectionTitle = "";
+    private int numberOfCards = 0;
 
     public CardWallSectionCellClientState(int startColumn, int endColumn, String sectionTitle) {
         this.startColumn = startColumn;
@@ -92,5 +93,17 @@ public class CardWallSectionCellClientState implements StateConvertable, Seriali
     public CardWallSectionCellServerState getCopyAsServerState() {
         CardWallSectionCellServerState copyOfState = new CardWallSectionCellServerState(startColumn, endColumn, sectionTitle);
         return copyOfState;
+    }
+
+    public void incrementCards(){
+        numberOfCards++;
+    }
+
+    public void decrementCards() {
+        numberOfCards--;
+    }
+
+    public boolean isCanDelete() {
+        return numberOfCards > 0;
     }
 }

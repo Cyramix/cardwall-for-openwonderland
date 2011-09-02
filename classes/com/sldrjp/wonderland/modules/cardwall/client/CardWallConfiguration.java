@@ -30,11 +30,10 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -44,14 +43,15 @@ import java.util.logging.Logger;
 public class CardWallConfiguration extends javax.swing.JDialog {
     CardWallCellClientState state = null;
     CardWallCellClientState newState = null;
+    boolean rowError = false;
+    boolean sectionError = false;
+    boolean columnError = false;
+
 
     /**
      * Creates new form CardWallConfiguration
      */
     private static final Logger logger = Logger.getLogger(CardWallConfiguration.class.getName());
-    TableColumn sectionNumberColumn = new TableColumn();
-    TableColumn sectionTitleColumn = new TableColumn();
-    TableColumn sectionNoOfColumnsColumn = new TableColumn();
 
     public CardWallConfiguration(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -60,37 +60,28 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
     public void setCardWallState(CardWallCellClientState state) {
         this.state = state;
-        noOfRowsText.setText(Integer.toString(state.getNumberOfRows()));
-        noOfRows = state.getNumberOfRows();
-        noOfColumnsText.setText(Integer.toString(state.getNumberOfColumns()));
-        noOfColumns = state.getNumberOfColumns();
+        numberOfRowsText.setText(Integer.toString(state.getNumberOfRows()));
+        numberOfRows = state.getNumberOfRows();
+        numberOfColumnsText.setText(Integer.toString(state.getNumberOfColumns()));
+        numberOfColumns = state.getNumberOfColumns();
         List<CardWallSectionCellClientState> sectionStates = state.getSectionStates();
-        noOfSectionsText.setText(Integer.toString(sectionStates.size()));
-        noOfSections = sectionStates.size();
+        numberOfSectionsText.setText(Integer.toString(sectionStates.size()));
+        numberOfSections = sectionStates.size();
 
 
-//        sectionTable.addColumn(sectionNumberColumn);
-//        sectionNumberColumn.setHeaderValue("Section");
-//        sectionNumberColumn.setWidth(50);
-//
-//        sectionTable.addColumn(sectionTitleColumn);
-//        sectionTitleColumn.setHeaderValue("Title");
-//        sectionTitleColumn.setWidth(1000);
-//
-//        sectionTable.addColumn(sectionNoOfColumnsColumn);
-//        sectionNoOfColumnsColumn.setHeaderValue("Columns");
-//        sectionNoOfColumnsColumn.setWidth(50);
-        DefaultTableModel model = (DefaultTableModel)sectionTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) sectionTable.getModel();
         model.addColumn("Section");
         model.addColumn("Title");
         model.addColumn("Columns");
+        model.addColumn("Can delete?");
 
         int i = 0;
         for (CardWallSectionCellClientState sectionState : sectionStates) {
-            String row[] = new String[3];
+            String row[] = new String[4];
             row[0] = Integer.toString(i);
             row[1] = sectionState.getSectionTitle();
-            row[2] = Integer.toString(sectionState.getEndColumn() - sectionState.getStartColumn()+1);
+            row[2] = Integer.toString(sectionState.getEndColumn() - sectionState.getStartColumn() + 1);
+            row[3] = sectionState.isCanDelete() ? "Yes" : "No";
 
             model.addRow(row);
             i++;
@@ -117,15 +108,43 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        labelNumberOfRows = new javax.swing.JLabel();
+        labelNumberOfColumns = new javax.swing.JLabel();
+        labelNumberOfSections = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         sectionTable = new javax.swing.JTable();
-        noOfColumnsText = new javax.swing.JTextField();
-        noOfRowsText = new javax.swing.JTextField();
+        numberOfColumnsText = new javax.swing.JTextField();
+        numberOfColumnsText.addFocusListener(new java.awt.event.FocusListener() {
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            public void focusLost(FocusEvent e) {
+                numberOfColumnsTextFocusLost(e);
+            }
+        });
+        numberOfRowsText = new javax.swing.JTextField();
+        numberOfRowsText.addFocusListener(new java.awt.event.FocusListener() {
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            public void focusLost(FocusEvent e) {
+                numberOfRowsTextFocusLost(e);
+            }
+        });
+
         jRadioButton2 = new javax.swing.JRadioButton();
-        noOfSectionsText = new javax.swing.JTextField();
+        numberOfSectionsText = new javax.swing.JTextField();
+        numberOfSectionsText.addFocusListener(new java.awt.event.FocusListener() {
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            public void focusLost(FocusEvent e) {
+                numberOfSectionsTextFocusLost(e);
+            }
+        });
         jLabel4 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
 
@@ -147,11 +166,9 @@ public class CardWallConfiguration extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("Number of Rows");
-
-        jLabel2.setText("Number of Columns");
-
-        jLabel3.setText("Number of Sections");
+        labelNumberOfRows.setText("Number of Rows");
+        labelNumberOfColumns.setText("Number of Columns");
+        labelNumberOfSections.setText("Number of Sections");
 
         sectionTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
@@ -159,18 +176,12 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(sectionTable);
 
-        noOfColumnsText.setText("");
-
-        noOfRowsText.setText("");
+        numberOfColumnsText.setText("");
+        numberOfRowsText.setText("");
 
         jRadioButton2.setText("Note Model");
 
-        noOfSectionsText.setText("");
-        noOfSectionsText.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                numberOfSectionsEdit(evt);
-            }
-        });
+        numberOfSectionsText.setText("");
 
         jLabel4.setText("Card Style");
 
@@ -194,14 +205,14 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel3)
-                                                        .addComponent(jLabel2)
-                                                        .addComponent(jLabel1))
+                                                        .addComponent(labelNumberOfSections)
+                                                        .addComponent(labelNumberOfColumns)
+                                                        .addComponent(labelNumberOfRows))
                                                 .addGap(29, 29, 29)
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(noOfColumnsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(noOfSectionsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(noOfRowsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                        .addComponent(numberOfColumnsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(numberOfSectionsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(numberOfRowsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -210,18 +221,18 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                                 .addGap(11, 11, 11)
-                                                .addComponent(noOfRowsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(numberOfRowsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addContainerGap()
-                                                .addComponent(jLabel1)
+                                                .addComponent(labelNumberOfRows)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(jLabel2)
-                                                        .addComponent(noOfColumnsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(labelNumberOfColumns)
+                                                        .addComponent(numberOfColumnsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(jLabel3)
-                                                        .addComponent(noOfSectionsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(labelNumberOfSections)
+                                                        .addComponent(numberOfSectionsText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGap(18, 18, 18)))
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -264,41 +275,71 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+        int newNumberOfRows = -1;
+        int newNumberOfColumns = -1;
+        int newNumberOfSections = -1;
+
+        try {
+
+            // verify that the model values is consistent
+
+            newNumberOfRows = Integer.parseInt(numberOfRowsText.getText());
+            newNumberOfColumns = Integer.parseInt(numberOfColumnsText.getText());
+            newNumberOfSections = Integer.parseInt(numberOfSectionsText.getText());
+
+        } catch (Exception e) {
+            String errorMessage;
+            if (newNumberOfRows < 0) {
+
+            } else if (newNumberOfColumns < 0) {
+
+            } else if (newNumberOfSections < 0) {
+
+            }
+
+            return;
+
+        }
+
+
         newState = new CardWallCellClientState();
         int temp;
-        temp = Integer.parseInt(noOfRowsText.getText());
+        temp = Integer.parseInt(numberOfRowsText.getText());
         if (state.getNumberOfRows() != temp) {
             newState.setNumberOfRows(temp);
-            noOfRows = temp;
+            numberOfRows = temp;
             changesMade = true;
         } else {
             newState.setNumberOfRows(state.getNumberOfRows());
         }
-        temp = Integer.parseInt(noOfColumnsText.getText());
+        temp = Integer.parseInt(numberOfColumnsText.getText());
         if (state.getNumberOfColumns() != temp) {
             newState.setNumberOfColumns(temp);
-            noOfColumns = temp;
+            numberOfColumns = temp;
             changesMade = true;
         } else {
             newState.setNumberOfColumns(state.getNumberOfColumns());
         }
-        temp = Integer.parseInt(noOfSectionsText.getText());
+        temp = Integer.parseInt(numberOfSectionsText.getText());
+        DefaultTableModel model = (DefaultTableModel) sectionTable.getModel();
         if (state.getSectionStates().size() != temp) {
-            noOfSections = temp;
+            numberOfSections = temp;
             changesMade = true;
         } else {
-            noOfSections = -1;
-            // check to see if any of the sections changed
-            List <CardWallSectionCellClientState> sections = state.getSectionStates();
-                 DefaultTableModel model = (DefaultTableModel)sectionTable.getModel();
-            for (int i=0; i < sections.size(); i++ ){
-                CardWallSectionCellClientState section = sections.get(i);
+            numberOfSections = state.getCopyOfSections().size();
+        }
+        int sectionCount = -1;
+        // check to see if any of the sections changed
+        List<CardWallSectionCellClientState> sections = state.getSectionStates();
+
+//        if (model.getRowCount()
+        for (int i = 0; i < sections.size(); i++) {
+            CardWallSectionCellClientState section = sections.get(i);
 //                Section workingSection = new Section(model.getValueAt(i,0)
 //
 //               if (section.getStartColumn() != )
-            }
-        }
 
+        }
 
 
         setVisible(false);
@@ -309,20 +350,87 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-      private void numberOfSectionsEdit(java.awt.event.ActionEvent evt) {
-         logger.fine("numberOfSectionsEdit " + noOfSectionsText.getText());
-          if (noOfSections < Integer.valueOf(noOfSectionsText.getText())) {
-              int newNoOfSections =  Integer.valueOf(noOfSectionsText.getText());
-              String row[] = new String[] {"","",""};
-              ((DefaultTableModel) sectionTable.getModel()).addRow(row);
-          }
-      }
+    private int checkAndGetValue(String standardText, JLabel label, JTextField field) throws DialogDataException {
+        int value;
+        try {
+            value = Integer.parseInt(field.getText());
+            if (value < 1) {
+                label.setText(standardText + " Must be greater than 0");
+                label.setForeground(Color.RED);
+                throw new DialogDataException(null);
+
+            }
+
+        } catch (Exception e) {
+            label.setText(standardText + " Must be a number");
+            label.setForeground(Color.RED);
+            throw new DialogDataException(e);
+        }
+        label.setText(standardText);
+        label.setForeground(Color.BLACK);
+        return value;
+    }
+
+    private void numberOfColumnsTextFocusLost(FocusEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // make sure the value is valid
+        int newNumberOfColumns;
+        try {
+            newNumberOfColumns = checkAndGetValue("Number of Columns", labelNumberOfColumns, numberOfColumnsText);
+            columnError = false;
+            okButton.setEnabled((!(sectionError || rowError)));
+        } catch (DialogDataException e) {
+            columnError = true;
+            okButton.setEnabled(false);
+        }
+
+    }
+
+    private void numberOfRowsTextFocusLost(FocusEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // make sure the value is valid
+        int newNumberOfColumns;
+        try {
+            newNumberOfColumns = checkAndGetValue("Number of Rows", labelNumberOfRows, numberOfRowsText);
+            rowError = false;
+            okButton.setEnabled((!(sectionError || columnError)));
+        } catch (DialogDataException e) {
+            rowError = true;
+            okButton.setEnabled(false);
+        }
+
+    }
+
+    private void numberOfSectionsTextFocusLost(FocusEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // make sure the value is valid
+        int newNumberOfSections;
+        try {
+            newNumberOfSections = checkAndGetValue("Number of Sections", labelNumberOfSections, numberOfSectionsText);
+            sectionError = false;
+            okButton.setEnabled((!(rowError || columnError)));
+        } catch (DialogDataException e) {
+            sectionError = true;
+            okButton.setEnabled(false);
+            return;
+        }
+
+
+        int sectionsToDelete = 0;
+        DefaultTableModel model = (DefaultTableModel) sectionTable.getModel();
+
+        // check if any current sections are 0 e.g. to be deleted
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if ("0".equals(model.getValueAt(i, 2))) {
+                sectionsToDelete++;
+            }
+        }
+
+        if ((model.getRowCount() - sectionsToDelete) < newNumberOfSections) {
+            model.addRow(new String[4]);
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     /**
-     *
-     *
-     *
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -343,21 +451,21 @@ public class CardWallConfiguration extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel labelNumberOfRows;
+    private javax.swing.JLabel labelNumberOfColumns;
+    private javax.swing.JLabel labelNumberOfSections;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable sectionTable;
-    private javax.swing.JTextField noOfRowsText;
-    private int noOfRows;
-    private javax.swing.JTextField noOfColumnsText;
-    private int noOfColumns;
-    private javax.swing.JTextField noOfSectionsText;
-    private int noOfSections;
+    private javax.swing.JTextField numberOfRowsText;
+    private int numberOfRows;
+    private javax.swing.JTextField numberOfColumnsText;
+    private int numberOfColumns;
+    private javax.swing.JTextField numberOfSectionsText;
+    private int numberOfSections;
     // End of variables declaration//GEN-END:variables
 
     private boolean changesMade = false;
@@ -368,5 +476,11 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
     public CardWallCellClientState getNewState() {
         return newState;
+    }
+
+    private class DialogDataException extends Throwable {
+        public DialogDataException(Exception e) {
+            super(e);
+        }
     }
 }

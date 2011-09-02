@@ -418,6 +418,10 @@ public class CardWallManager {
 
     public void reConfigureWall(CardWallCellClientState newState) {
 
+        //move all cards located in areas to be removed to the respective archive
+
+
+
         List<Card> currentCards = null;
         // remove all existing cards from the master panel
         currentCards = removeCardPanels();
