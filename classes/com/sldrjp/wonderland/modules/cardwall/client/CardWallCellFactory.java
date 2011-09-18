@@ -54,7 +54,7 @@ public class CardWallCellFactory implements CellFactorySPI {
         }
         state.setState(clientState);
 
-        state.setName("Card Wall");
+        state.setName(BUNDLE.getString("title.cardWall"));
 
 
         SwingCellFactoryUtils.skipSystemInitialPlacement(state);
@@ -63,7 +63,7 @@ public class CardWallCellFactory implements CellFactorySPI {
     }
 
     public String getDisplayName() {
-        return BUNDLE.getString("Card_Wall");
+        return BUNDLE.getString("title.cardWall");
     }
 
     public Image getPreviewImage() {

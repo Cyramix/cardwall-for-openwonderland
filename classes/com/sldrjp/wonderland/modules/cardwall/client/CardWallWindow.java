@@ -18,12 +18,10 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 
 import com.jme.math.Vector2f;
 import com.sldrjp.wonderland.modules.cardwall.client.cell.CardWallCell;
-import com.sldrjp.wonderland.modules.cardwall.common.CardWallDefaultConfiguration;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import org.jdesktop.wonderland.client.jme.JmeClientMain;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
 import org.jdesktop.wonderland.modules.appbase.client.App2D;
-import org.jdesktop.wonderland.modules.appbase.client.Window2D;
 import org.jdesktop.wonderland.modules.appbase.client.swing.WindowSwing;
 
 import javax.swing.*;
@@ -72,7 +70,7 @@ public class CardWallWindow extends WindowSwing {
         logger.fine("CardWallWindow - width " + width + " height " +height);
         this.cell = cell;
 
-        setTitle(BUNDLE.getString("Card_Wall"));
+        setTitle(BUNDLE.getString("title.cardWall"));
 
         try {
             SwingUtilities.invokeAndWait(new Runnable() {

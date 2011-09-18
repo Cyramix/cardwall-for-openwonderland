@@ -35,6 +35,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -44,7 +45,8 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
 
     private static final Logger logger = Logger.getLogger(CardPanelImpl.class.getName());
 
-
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
+            "com/sldrjp/wonderland/modules/cardwall/client/resources/Bundle");
     /**
      * Creates new form CardPanelImpl
      */
@@ -125,7 +127,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         points = new javax.swing.JTextField();
 
         redColour.setBackground(new java.awt.Color(255, 204, 204));
-        redColour.setText("Red");
+        redColour.setText(BUNDLE.getString("cardPanel.menu.redColour"));
         redColour.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 redColourActionPerformed(evt);
@@ -134,7 +136,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         jPopupMenu1.add(redColour);
 
         greenColour.setBackground(new java.awt.Color(204, 255, 204));
-        greenColour.setText("Green");
+        greenColour.setText(BUNDLE.getString("cardPanel.menu.greenColour"));
         greenColour.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 greenColourActionPerformed(evt);
@@ -143,7 +145,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         jPopupMenu1.add(greenColour);
 
         blueColour.setBackground(new java.awt.Color(204, 204, 255));
-        blueColour.setText("Blue");
+        blueColour.setText(BUNDLE.getString("cardPanel.menu.blueColour"));
         blueColour.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 blueColourActionPerformed(evt);
@@ -152,7 +154,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         jPopupMenu1.add(blueColour);
 
         yellowColour.setBackground(new java.awt.Color(250, 245, 219));
-        yellowColour.setText("Yellow");
+        yellowColour.setText(BUNDLE.getString("cardPanel.menu.yellowColour"));
         yellowColour.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 yellowColourActionPerformed(evt);
@@ -161,7 +163,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         jPopupMenu1.add(yellowColour);
         jPopupMenu1.add(jSeparator1);
 
-        deleteItem.setText("Delete");
+        deleteItem.setText(BUNDLE.getString("cardPanel.menu.delete"));
         deleteItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteItemActionPerformed(evt);
@@ -169,7 +171,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         });
         jPopupMenu1.add(deleteItem);
 
-        archiveItem.setText("Archive");
+        archiveItem.setText(BUNDLE.getString("cardPanel.menu.archive"));
         archiveItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 archiveItemActionPerformed(evt);

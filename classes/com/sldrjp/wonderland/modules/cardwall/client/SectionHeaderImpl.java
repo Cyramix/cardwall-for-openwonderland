@@ -31,11 +31,15 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClient
 
 import java.awt.*;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author bob
  */
 public class SectionHeaderImpl extends javax.swing.JPanel implements SectionHeader {
+
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
+            "com/sldrjp/wonderland/modules/cardwall/client/resources/Bundle");
 
     /**
      * Creates new form SectionHeaderImpl
@@ -83,7 +87,7 @@ public class SectionHeaderImpl extends javax.swing.JPanel implements SectionHead
         jLabel1.setText("jLabel1");
 
         jButton1.setFont(new java.awt.Font("DejaVu Sans", 0, 8)); // NOI18N
-        jButton1.setText("Add new");
+        jButton1.setText(BUNDLE.getString("sectionHeader.button.addNew"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);

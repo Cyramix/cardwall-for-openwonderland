@@ -88,7 +88,7 @@ public class CardWallCell extends App2DCell {
             case ACTIVE:
                 if (increasing) {
                     commComponent = getComponent(CardWallComponent.class);
-                    CardWallApp app = new CardWallApp("Card Wall", clientState.getPixelScale());
+                    CardWallApp app = new CardWallApp(BUNDLE.getString("title.cardWall"), clientState.getPixelScale());
                     logger.fine("pixel scale " + clientState.getPixelScale());
                     setApp(app);
 
@@ -171,7 +171,7 @@ public class CardWallCell extends App2DCell {
 
         public ContextMenuItem[] getContextMenuItems(ContextEvent event) {
             return new ContextMenuItem[]{new SimpleContextMenuItem(
-                    BUNDLE.getString("Export_data"), null,
+                    BUNDLE.getString("menu.exportData"), null,
                     new CardWallContextExportMenuListener())//,
 
 //                    new SimpleContextMenuItem(
@@ -192,7 +192,7 @@ public class CardWallCell extends App2DCell {
         public void actionPerformed(ContextMenuItemEvent event) {
             JFileChooser jChooser = new JFileChooser();
 //            jChooser.setFileFilter(new FileNameExtensionFilter(BUNDLE.getString("Csv_file"), "cardwall.csv"));
-            jChooser.addChoosableFileFilter(new FileNameExtensionFilter(BUNDLE.getString("Csv_file"), "cardwall"));
+            jChooser.addChoosableFileFilter(new FileNameExtensionFilter(BUNDLE.getString("file.type.cardwall"), "cardwall"));
 
             int response = jChooser.showSaveDialog(null);
             if (response == JFileChooser.APPROVE_OPTION) {
@@ -213,7 +213,7 @@ public class CardWallCell extends App2DCell {
         public void actionPerformed(ContextMenuItemEvent event) {
             JFileChooser jChooser = new JFileChooser();
 //            jChooser.setFileFilter(new FileNameExtensionFilter(BUNDLE.getString("Csv_file"), "cardwall.csv"));
-            jChooser.addChoosableFileFilter(new FileNameExtensionFilter(BUNDLE.getString("Csv_file"), "cardwall"));
+            jChooser.addChoosableFileFilter(new FileNameExtensionFilter(BUNDLE.getString("file.type.cardwall"), "cardwall"));
 
             int response = jChooser.showOpenDialog(null);
             if (response == JFileChooser.APPROVE_OPTION) {

@@ -35,6 +35,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -46,6 +47,9 @@ public class CardWallConfiguration extends javax.swing.JDialog {
     boolean rowError = false;
     boolean sectionError = false;
     boolean columnError = false;
+
+        private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
+            "com/sldrjp/wonderland/modules/cardwall/client/resources/Bundle");
 
 
     /**
@@ -70,10 +74,10 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
 
         DefaultTableModel model = (DefaultTableModel) sectionTable.getModel();
-        model.addColumn("Section");
-        model.addColumn("Title");
-        model.addColumn("Columns");
-        model.addColumn("Can delete?");
+        model.addColumn(BUNDLE.getString("configuration.column.section"));
+        model.addColumn(BUNDLE.getString("configuration.column.title"));
+        model.addColumn(BUNDLE.getString("configuration.column.columns"));
+        model.addColumn(BUNDLE.getString("configuration.column.canDelete"));
 
         int i = 0;
         for (CardWallSectionCellClientState sectionState : sectionStates) {
@@ -81,7 +85,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
             row[0] = Integer.toString(i);
             row[1] = sectionState.getSectionTitle();
             row[2] = Integer.toString(sectionState.getEndColumn() - sectionState.getStartColumn() + 1);
-            row[3] = sectionState.isCanDelete() ? "Yes" : "No";
+            row[3] = sectionState.isCanDelete() ? BUNDLE.getString("general.yes") : BUNDLE.getString("general.no");
 
             model.addRow(row);
             i++;
@@ -152,23 +156,23 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        okButton.setText("OK");
+        okButton.setText(BUNDLE.getString("general.ok"));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
             }
         });
 
-        cancelButton.setText("Cancel");
+        cancelButton.setText(BUNDLE.getString("general.cancel"));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
 
-        labelNumberOfRows.setText("Number of Rows");
-        labelNumberOfColumns.setText("Number of Columns");
-        labelNumberOfSections.setText("Number of Sections");
+        labelNumberOfRows.setText(BUNDLE.getString("configuration.label.numberOfRows"));
+        labelNumberOfColumns.setText(BUNDLE.getString("configuration.label.numberOfColumns"));
+        labelNumberOfSections.setText(BUNDLE.getString("configuration.label.numberOfSections"));
 
         sectionTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
@@ -179,13 +183,13 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         numberOfColumnsText.setText("");
         numberOfRowsText.setText("");
 
-        jRadioButton2.setText("Note Model");
+        jRadioButton2.setText(BUNDLE.getString("configuration.label.noteModel"));
 
         numberOfSectionsText.setText("");
 
-        jLabel4.setText("Card Style");
+        jLabel4.setText(BUNDLE.getString("configuration.label.cardStyle"));
 
-        jRadioButton1.setText("Agile Model");
+        jRadioButton1.setText(BUNDLE.getString("configuration.label.agileModel"));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -355,14 +359,14 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         try {
             value = Integer.parseInt(field.getText());
             if (value < 1) {
-                label.setText(standardText + " Must be greater than 0");
+                label.setText(standardText + " - " + BUNDLE.getString("configuration.label.errorGreaterThanZero"));
                 label.setForeground(Color.RED);
                 throw new DialogDataException(null);
 
             }
 
         } catch (Exception e) {
-            label.setText(standardText + " Must be a number");
+            label.setText(standardText + " - " + BUNDLE.getString("configuration.label.errorMustBeANumber"));
             label.setForeground(Color.RED);
             throw new DialogDataException(e);
         }
@@ -375,7 +379,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         // make sure the value is valid
         int newNumberOfColumns;
         try {
-            newNumberOfColumns = checkAndGetValue("Number of Columns", labelNumberOfColumns, numberOfColumnsText);
+            newNumberOfColumns = checkAndGetValue(BUNDLE.getString("configuration.label.numberOfColumns"),labelNumberOfColumns, numberOfColumnsText);
             columnError = false;
             okButton.setEnabled((!(sectionError || rowError)));
         } catch (DialogDataException e) {
@@ -389,7 +393,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         // make sure the value is valid
         int newNumberOfColumns;
         try {
-            newNumberOfColumns = checkAndGetValue("Number of Rows", labelNumberOfRows, numberOfRowsText);
+            newNumberOfColumns = checkAndGetValue(BUNDLE.getString("configuration.label.numberOfRows"), labelNumberOfRows, numberOfRowsText);
             rowError = false;
             okButton.setEnabled((!(sectionError || columnError)));
         } catch (DialogDataException e) {
@@ -403,7 +407,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         // make sure the value is valid
         int newNumberOfSections;
         try {
-            newNumberOfSections = checkAndGetValue("Number of Sections", labelNumberOfSections, numberOfSectionsText);
+            newNumberOfSections = checkAndGetValue(BUNDLE.getString("configuration.label.numberOfSections"), labelNumberOfSections, numberOfSectionsText);
             sectionError = false;
             okButton.setEnabled((!(rowError || columnError)));
         } catch (DialogDataException e) {
