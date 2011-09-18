@@ -21,8 +21,14 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellCli
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class CardWallDefaultConfiguration {
+
+
+            private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
+            "com/sldrjp/wonderland/modules/cardwall/common/resources/Bundle");
+
 
     public static int TOP_HEIGHT = 50;
     public static int BOTTOM_HEIGHT = 50;
@@ -45,23 +51,23 @@ public class CardWallDefaultConfiguration {
         
         List<CardWallSectionCellClientState> sections = new ArrayList<CardWallSectionCellClientState>();
 
-        CardWallSectionCellClientState section = new CardWallSectionCellClientState(0,1,"Backlog");
+        CardWallSectionCellClientState section = new CardWallSectionCellClientState(0,1,BUNDLE.getString("default.sectionTitle.section1"));
         sections.add(section);
         int columns = 2;
 
-        section = new CardWallSectionCellClientState(2,3,"To Do");
+        section = new CardWallSectionCellClientState(2,3,BUNDLE.getString("default.sectionTitle.section2"));
         sections.add(section);
         columns += 2;
 
-        section = new CardWallSectionCellClientState(4,5,"In Progress");
+        section = new CardWallSectionCellClientState(4,5,BUNDLE.getString("default.sectionTitle.section3"));
         sections.add(section);
         columns += 2;
 
-        section = new CardWallSectionCellClientState(6,7,"Completed");
+        section = new CardWallSectionCellClientState(6,7,BUNDLE.getString("default.sectionTitle.section4"));
         sections.add(section);
         columns += 2;
 
-        section = new CardWallSectionCellClientState(8,9,"Cancelled");
+        section = new CardWallSectionCellClientState(8,9,BUNDLE.getString("default.sectionTitle.section5"));
         sections.add(section);
         columns +=2;
 
