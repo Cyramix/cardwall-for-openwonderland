@@ -32,28 +32,28 @@ import java.util.List;
 public class CardWallConfigurationHelper {
 
     private boolean changed = false;
+    private boolean sectionTitleChanged = false;
     private CardWallCellClientState originalState;
 
     int numberOfRows;
     int numberOfColumns;
     int numberOfSections;
-    int [] workingSectionOrder;
-    String [] workingTitles;
-    int [] workingColumnLayout;
-
+    int[] workingSectionOrder;
+    String[] workingTitles;
+    int[] workingColumnLayout;
 
 
     public CardWallConfigurationHelper(CardWallCellClientState originalState) {
         this.originalState = originalState;
     }
 
-    public boolean testNewModel(int numberOfRows, int numberOfColumns, int numberOfSections, int [] sectionOrder, String[] titles, int[] columnLayout ) throws CardWallDialogDataException {
+    public boolean testNewModel(int numberOfRows, int numberOfColumns, int numberOfSections, int[] sectionOrder, String[] titles, int[] columnLayout) throws CardWallDialogDataException {
         if (sectionOrder.length != titles.length || columnLayout.length != sectionOrder.length)
-          throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_LOST_INTEGRITY);
+            throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_LOST_INTEGRITY);
 
         // check if the number of columns add up
-        if (sum (columnLayout) != numberOfColumns){
-          throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NUMBER_COLUMNS_ERROR);
+        if (sum(columnLayout) != numberOfColumns) {
+            throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NUMBER_COLUMNS_ERROR);
         }
 
         // has the number of rows changed
@@ -66,26 +66,40 @@ public class CardWallConfigurationHelper {
         }
 
         // has the number of sections changed
-        List <CardWallSectionCellClientState> sections = originalState.getSectionStates();
-        if(numberOfSections != sections.size()) {
-          changed = true;
+        List<CardWallSectionCellClientState> sections = originalState.getSectionStates();
+        if (numberOfSections != sections.size()) {
+            changed = true;
         }
 
         // now we need to analyze the grid to determine if any titles or the order has changed or if a section has been removed or added
 
 
-        // first check if the order is the same
-        for (int i = 0; i<sectionOrder.length;i++) {
-            if (i != sectionOrder[i]){
+        // first check if the order is the same; at the same time count the number of rows with column values greater than 0
+        int numberOfSectionsWithColumns = 0;
+        for (int i = 0; i < columnLayout.length; i++) {
+            if (columnLayout[i] > 0) {
+                numberOfSectionsWithColumns++;
+            }
+        }
+        if (numberOfSectionsWithColumns != numberOfSections) {
+            changed = false;
+            throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NUMBER_COLUMNS_ERROR);
+        }
+
+        // now compare the existing sections with table
+        for (int i = 0; i < sectionOrder.length; i++) {
+            if (i == sectionOrder[i]) {
+                if (i >= sections.size()) {
+                    changed = true;
+                } else if (sections.get(i).getNumberOfColumns() != columnLayout[i]) {
+                    changed = true;
+                } else if (!sections.get(i).getSectionTitle().equals(titles[i])) {
+                    sectionTitleChanged = true;
+                }
+            } else {
                 changed = true;
             }
         }
-
-        // are there more rows in the working arrays than sections (indicates that a section has been deleted)
-
-
-
-
 
         // preserve the data
         this.numberOfColumns = numberOfColumns;
@@ -95,18 +109,21 @@ public class CardWallConfigurationHelper {
         workingSectionOrder = sectionOrder;
         workingTitles = titles;
 
-
-        return true;
+        return changed;
     }
 
     public boolean isChanged() {
         return changed;
     }
 
-    private int sum (int[] list) {
+    public boolean isSectionTitleChanged() {
+        return sectionTitleChanged;
+    }
+
+    private int sum(int[] list) {
         int retval = 0;
-        for(int i=0; i < list.length; i++){
-          retval += list[i];
+        for (int i = 0; i < list.length; i++) {
+            retval += list[i];
         }
         return retval;
     }

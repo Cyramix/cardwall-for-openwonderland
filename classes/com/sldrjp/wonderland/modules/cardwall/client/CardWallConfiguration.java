@@ -401,7 +401,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                 columnLayout[i] = Integer.parseInt(model.getValueAt(i, 2).toString());
             }
 
-            new CardWallConfigurationHelper(state).testNewModel(newNumberOfRows, newNumberOfColumns, newNumberOfSections, sectionOrder, titles, columnLayout);
+            helper.testNewModel(newNumberOfRows, newNumberOfColumns, newNumberOfSections, sectionOrder, titles, columnLayout);
         } catch (NumberFormatException e) {
 
             return false;
