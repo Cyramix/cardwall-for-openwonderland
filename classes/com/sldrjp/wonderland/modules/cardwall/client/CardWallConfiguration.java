@@ -29,7 +29,6 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
-import com.sleepycat.je.tree.IN;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -285,52 +284,18 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         if (testNewModel(helper)) {
             if (helper.isChanged()) {
                 newState = helper.getNewState();
-                changesMade = true;
+                layoutChangesMade = true;
+            } else if (helper.isSectionTitleChanged()){
+                titles = helper.getTitles();
+                titleChangesMade = true;
             }
         }
-        int newNumberOfRows = -1;
-        int newNumberOfColumns = -1;
-        int newNumberOfSections = -1;
-
-        try {
-            // verify that the model values is consistent
-            newNumberOfRows = checkAndGetValue(BUNDLE.getString("configuration.label.numberOfRows"), labelNumberOfRows, numberOfRowsText);
-            newNumberOfColumns = checkAndGetValue(BUNDLE.getString("configuration.label.numberOfColumns"), labelNumberOfColumns, numberOfColumnsText);
-            newNumberOfSections = checkAndGetValue(BUNDLE.getString("configuration.label.numberOfSections"), labelNumberOfSections, numberOfSectionsText);
-
-        } catch (CardWallDialogDataException e) {
-            return;
-
-        }
-
-        newState = new CardWallCellClientState();
-
-        if (state.getNumberOfRows() != newNumberOfRows) {
-            newState.setNumberOfRows(newNumberOfRows);
-            changesMade = true;
-        } else {
-            newState.setNumberOfRows(state.getNumberOfRows());
-        }
-
-        if (state.getNumberOfColumns() != newNumberOfColumns) {
-            newState.setNumberOfColumns(newNumberOfColumns);
-            changesMade = true;
-        } else {
-            newState.setNumberOfColumns(state.getNumberOfColumns());
-        }
-
-
-        if (state.getSectionStates().size() != newNumberOfSections) {
-            changesMade = true;
-        } else {
-        }
-
 
         setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        changesMade = false;
+        layoutChangesMade = false;
         setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -487,14 +452,20 @@ public class CardWallConfiguration extends javax.swing.JDialog {
     private javax.swing.JTextField numberOfSectionsText;
     // End of variables declaration//GEN-END:variables
 
-    private boolean changesMade = false;
+    private boolean layoutChangesMade = false;
+    private boolean titleChangesMade = false;
 
     public boolean isDirty() {
-        return changesMade;
+        return layoutChangesMade || titleChangesMade;
     }
 
     public CardWallCellClientState getNewState() {
         return newState;
     }
 
+    private String[] titles;
+
+    public  String[] getTitles(){
+        return titles;
+    };
 }

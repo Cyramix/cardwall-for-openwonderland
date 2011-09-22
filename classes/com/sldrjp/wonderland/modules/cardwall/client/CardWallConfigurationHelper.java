@@ -134,5 +134,9 @@ public class CardWallConfigurationHelper {
         }
         return new CardWallCellClientState();
     }
+
+    public String[] getTitles() {
+        return workingTitles;
+    }
 }
 
