@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 public class CardWallDefaultConfiguration {
 
 
-            private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
             "com/sldrjp/wonderland/modules/cardwall/common/resources/Bundle");
 
 
@@ -42,34 +42,44 @@ public class CardWallDefaultConfiguration {
 
     public static int preferredHeightBase = TOP_HEIGHT + SPACER_HEIGHT + BOTTOM_HEIGHT;
 
+    public static int [] sectionOrderArray = {0,1,2,3,4};
+    public static int[] layoutArray = {2, 2, 2, 2, 2};
+    public static String[] sectionTitles = {BUNDLE.getString("default.sectionTitle.section1"),
+            BUNDLE.getString("default.sectionTitle.section2"),
+            BUNDLE.getString("default.sectionTitle.section3"),
+            BUNDLE.getString("default.sectionTitle.section4"),
+            BUNDLE.getString("default.sectionTitle.section5")
+    };
+
+
 
     public static CardWallCellClientState getDefaultState() {
 
         int DEFAULT_NUMBER_ROWS = 4;
 
         CardWallCellClientState defaultState = new CardWallCellClientState();
-        
+
         List<CardWallSectionCellClientState> sections = new ArrayList<CardWallSectionCellClientState>();
 
-        CardWallSectionCellClientState section = new CardWallSectionCellClientState(0,1,BUNDLE.getString("default.sectionTitle.section1"));
+        CardWallSectionCellClientState section = new CardWallSectionCellClientState(0, 1, BUNDLE.getString("default.sectionTitle.section1"));
         sections.add(section);
         int columns = 2;
 
-        section = new CardWallSectionCellClientState(2,3,BUNDLE.getString("default.sectionTitle.section2"));
+        section = new CardWallSectionCellClientState(2, 3, BUNDLE.getString("default.sectionTitle.section2"));
         sections.add(section);
         columns += 2;
 
-        section = new CardWallSectionCellClientState(4,5,BUNDLE.getString("default.sectionTitle.section3"));
+        section = new CardWallSectionCellClientState(4, 5, BUNDLE.getString("default.sectionTitle.section3"));
         sections.add(section);
         columns += 2;
 
-        section = new CardWallSectionCellClientState(6,7,BUNDLE.getString("default.sectionTitle.section4"));
+        section = new CardWallSectionCellClientState(6, 7, BUNDLE.getString("default.sectionTitle.section4"));
         sections.add(section);
         columns += 2;
 
-        section = new CardWallSectionCellClientState(8,9,BUNDLE.getString("default.sectionTitle.section5"));
+        section = new CardWallSectionCellClientState(8, 9, BUNDLE.getString("default.sectionTitle.section5"));
         sections.add(section);
-        columns +=2;
+        columns += 2;
 
         defaultState.setSectionStates(sections);
         defaultState.setNumberOfColumns(columns);
