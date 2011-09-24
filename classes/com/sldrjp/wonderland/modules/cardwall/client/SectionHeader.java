@@ -35,4 +35,5 @@ public interface SectionHeader {
     Component getAsComponent();
 
 
+    void setNewText(String newTitle);
 }

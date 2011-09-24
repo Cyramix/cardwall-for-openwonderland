@@ -25,6 +25,7 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClient
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +136,7 @@ public class CardWallManager {
     }
 
     public void addSection(int sectionNumber, CardWallSectionCellClientState sectionState) {
-        Section section = new Section(sectionNumber,  sectionState);
+        Section section = new Section(sectionNumber, sectionState);
         sections.add(sectionNumber, section);
         masterPanel.addSection(section);
     }
@@ -416,10 +417,24 @@ public class CardWallManager {
         return sections.get(i);
     }
 
+    public void configureCardWall(JFrame frame) {
+        CardWallConfiguration configuration = new CardWallConfiguration(frame, true);
+        configuration.setCardWallState(state);
+        configuration.setVisible(true);
+        if (configuration.isDirty()) {
+            if (configuration.isLayoutChanged()) {
+//                reConfigureWall(configuration.getNewState());
+            } else if (configuration.isTitleChanged()) {
+                changeTitles(configuration.getTitles());
+
+            }
+        }
+        configuration.dispose();
+    }
+
     public void reConfigureWall(CardWallCellClientState newState) {
 
         //move all cards located in areas to be removed to the respective archive
-
 
 
         List<Card> currentCards = null;
@@ -449,16 +464,41 @@ public class CardWallManager {
 
         List<Card> currentCards = new ArrayList<Card>();
         // iterate through all the cards
-        for (int i = 0; i< cards.length; i++){
+        for (int i = 0; i < cards.length; i++) {
             for (int j = 0; j < cards[i].length; j++) {
-                if (cards[i][j] != null){
+                if (cards[i][j] != null) {
                     currentCards.add(cards[i][j]);
                     masterPanel.queueRemovePanel(cards[i][j].getCardPanel());
                     cards[i][j] = null;
                 }
             }
         }
-        return  currentCards;
+        return currentCards;
+
+    }
+
+    public void changeSectionTitle(int sectionNumber, String newTitle) {
+        Section section = sections.get(sectionNumber);
+        section.getSectionHeader().setNewText(newTitle);
+        section.getState().setSectionTitle(newTitle);
+
+    }
+
+    /**
+     * iterates through all the sections - if the title has changed - modify the title in the section object,
+     * the text displayed and send a message to the server
+     *
+     * @param titles the complete list of titles
+     */
+    public void changeTitles(String[] titles) {
+
+        for (int i = 0; i < titles.length; i++) {
+            if (!sections.get(i).getState().getSectionTitle().equals(titles[i])) {
+                changeSectionTitle(i, titles[i]);
+                cell.sendMessage(CardWallSyncMessage.UPDATE_SECTION_TITLE, i, titles[i]);
+            }
+        }
+
 
     }
 }

@@ -61,6 +61,11 @@ public class CardWallCellForTests extends CardWallCell {
           messages.add(prepareMessage(messageType,position,card));
     }
 
+    @Override
+    public void sendMessage(int messageType, int i, String title) {
+        messages.add(prepareMessage(messageType,i,title));
+    }
+
     public List<CardWallSyncMessage> getMessages() {
         return messages;
     }

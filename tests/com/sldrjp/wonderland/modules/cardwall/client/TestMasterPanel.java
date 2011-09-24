@@ -47,7 +47,7 @@ public class TestMasterPanel extends JFrame {
         frame.mainPanel.configurePanel(state);
         frame.cardWallManager.populateData(state);
         // show frame
-        frame.mainPanel.setMinimumSize(new Dimension(state.getPreferredWidth(), state.getPreferredHeight()) );
+        frame.mainPanel.setMinimumSize(new Dimension(state.getPreferredWidth(), state.getPreferredHeight()));
         frame.mainPanel.validate();
         frame.mainPanel.setVisible(true);
         frame.validate();
@@ -75,15 +75,14 @@ public class TestMasterPanel extends JFrame {
             });
 
 
-
             contentPane = (JPanel) this.getContentPane();
             contentPane.setLayout(new BorderLayout());
-            contentPane.add(button,BorderLayout.SOUTH);
+            contentPane.add(button, BorderLayout.SOUTH);
             button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
-            }
-        });
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    buttonActionPerformed(evt);
+                }
+            });
             setTitle("TestMasterPanel");
             contentPane.setSize(state.getPreferredWidth(), state.getPreferredHeight() + button.getHeight());
             contentPane.add(mainPanel, BorderLayout.NORTH);
@@ -93,18 +92,13 @@ public class TestMasterPanel extends JFrame {
 
             pack();
         }
-       JButton button = new JButton("config");
 
-     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {
-            CardWallConfiguration configuration = new CardWallConfiguration(this, true);
-            configuration.setCardWallState(state);
-            configuration.setVisible(true);
-            if (configuration.isDirty()){
-              cardWallManager.reConfigureWall(configuration.getNewState());
-            }
-            configuration.dispose();
+        JButton button = new JButton("config");
 
-     }
+        private void buttonActionPerformed(java.awt.event.ActionEvent evt) {
+            cardWallManager.configureCardWall(this);
+
+        }
 
     }
 

@@ -468,4 +468,12 @@ public class CardWallConfiguration extends javax.swing.JDialog {
     public  String[] getTitles(){
         return titles;
     };
+
+    public boolean isTitleChanged() {
+        return titleChangesMade;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public boolean isLayoutChanged() {
+        return layoutChangesMade;
+    }
 }

@@ -53,8 +53,9 @@ public class CardWallMessageHandler {
                 break;
             case CardWallSyncMessage.MOVE_CARD:
                 cardWallManager.moveCard(cardWallMessage.getOriginalCardPosition(), cardWallMessage.getCardClientState());
-
-
+                break;
+            case CardWallSyncMessage.UPDATE_SECTION_TITLE:
+                cardWallManager.changeSectionTitle(cardWallMessage.getSection(), cardWallMessage.getText());
                 break;
         }
     //@todo process remaining message types

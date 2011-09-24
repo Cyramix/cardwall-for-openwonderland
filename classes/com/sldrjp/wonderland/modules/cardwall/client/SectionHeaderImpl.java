@@ -29,6 +29,7 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -145,6 +146,22 @@ public class SectionHeaderImpl extends javax.swing.JPanel implements SectionHead
     public void setText(String text) {
         jLabel1.setText(text);
         jLabel1.setVisible(true);
+
+    }
+
+    public void setNewText(String text) {
+        jLabel1.setText(text);
+        jLabel1.setVisible(true);
+        final JPanel panel = this;
+
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+
+                panel.repaint();
+            }
+        });
+
     }
 
 }

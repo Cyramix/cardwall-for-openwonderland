@@ -163,6 +163,20 @@ public class CardWallCell extends App2DCell {
         return message;
     }
 
+    public void sendMessage(int messageType, int i, String title) {
+        logger.fine("Sending message - " + messageType + " " + i + ":" + title);
+        CardWallSyncMessage message = prepareMessage(messageType, i, title);
+        commComponent.sendMessage(message);
+    }
+
+       protected CardWallSyncMessage prepareMessage(int messageType, int position, String text) {
+        CardWallSyncMessage message = new CardWallSyncMessage();
+        message.setMessageType(messageType);
+        message.setSection(position);
+        message.setText(text);
+        return message;
+    }
+
     /**
      * Context menu factory
      */
@@ -172,14 +186,14 @@ public class CardWallCell extends App2DCell {
         public ContextMenuItem[] getContextMenuItems(ContextEvent event) {
             return new ContextMenuItem[]{new SimpleContextMenuItem(
                     BUNDLE.getString("menu.exportData"), null,
-                    new CardWallContextExportMenuListener())//,
+                    new CardWallContextExportMenuListener()),
 
 //                    new SimpleContextMenuItem(
 //                            BUNDLE.getString("Import_data"), null,
 //                            new CardWallContextImportMenuListener()),
-//                      new SimpleContextMenuItem(
-//                            BUNDLE.getString("Configure"), null,
-//                            new CardWallContextConfigureMenuListener())
+                      new SimpleContextMenuItem(
+                            BUNDLE.getString("menu.configure"), null,
+                            new CardWallContextConfigureMenuListener())
             };
         }
     }
@@ -230,15 +244,12 @@ public class CardWallCell extends App2DCell {
     class CardWallContextConfigureMenuListener implements ContextMenuActionListener {
 
         public void actionPerformed(ContextMenuItemEvent event) {
-            CardWallConfiguration configuration = new CardWallConfiguration(JmeClientMain.getFrame().getFrame(), true);
-            configuration.setCardWallState(clientState);
-            configuration.setVisible(true);
-            if (configuration.isDirty()){
-              cardWallManager.reConfigureWall(configuration.getNewState());
-            }
-            configuration.dispose();
+
+            cardWallManager.configureCardWall(JmeClientMain.getFrame().getFrame());
 
 
         }
+
+
     }
 }

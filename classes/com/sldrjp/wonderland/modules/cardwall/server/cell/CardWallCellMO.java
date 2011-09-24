@@ -190,6 +190,10 @@ public class CardWallCellMO extends App2DCellMO {
             case CardWallSyncMessage.UPDATE_SERVER_CARD_STATE_ONLY:
                 updateServerState(message.getCardClientState());
                 break;
+            case CardWallSyncMessage.UPDATE_SECTION_TITLE:
+                stateHolder.getSectionStates().get(message.getSection()).setSectionTitle(message.getText());
+                break;
+
 
 
         }

@@ -41,6 +41,10 @@ public class SectionHeaderMock implements SectionHeader {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void setNewText(String newTitle) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void setVisible(boolean b) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

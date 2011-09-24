@@ -48,6 +48,7 @@ public class CardWallSyncMessage extends CellMessage implements Serializable {
     public static final int ADD_CARD = 5;
     public static final int DELETE_CARD = 6;
     public static final int UPDATE_SERVER_CARD_STATE_ONLY = -7;
+    public static final int UPDATE_SECTION_TITLE = 8;
 
     public CardWallSyncMessage() {
         this.messageType = CREATE_DEFAULT;
@@ -135,6 +136,7 @@ public class CardWallSyncMessage extends CellMessage implements Serializable {
 
     @Override
     public String toString() {
-        return  messageType + " " + cardClientState.toString();
+        return messageType + ((cardClientState == null)? "" :" " + cardClientState.toString());
+
     }
 }
