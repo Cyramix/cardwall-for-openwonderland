@@ -47,6 +47,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
             "com/sldrjp/wonderland/modules/cardwall/client/resources/Bundle");
+
     /**
      * Creates new form CardPanelImpl
      */
@@ -55,7 +56,6 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         keyTimer = new Timer(1000, this);
 
     }
-
 
 
     private MasterPanelImpl masterPanel;
@@ -118,6 +118,9 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         blueColour = new javax.swing.JMenuItem();
         yellowColour = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        copyToStickyNote = new javax.swing.JMenuItem();
+        copyTo = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         deleteItem = new javax.swing.JMenuItem();
         archiveItem = new javax.swing.JMenuItem();
         title = new javax.swing.JTextField();
@@ -161,14 +164,16 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
             }
         });
         jPopupMenu1.add(yellowColour);
-        jPopupMenu1.add(jSeparator1);
 
+
+        jPopupMenu1.add(jSeparator2);
         deleteItem.setText(BUNDLE.getString("cardPanel.menu.delete"));
         deleteItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteItemActionPerformed(evt);
             }
         });
+
         jPopupMenu1.add(deleteItem);
 
         archiveItem.setText(BUNDLE.getString("cardPanel.menu.archive"));
@@ -178,6 +183,18 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
             }
         });
         jPopupMenu1.add(archiveItem);
+
+        jPopupMenu1.add(jSeparator1);
+        copyTo.setText(BUNDLE.getString("cardPanel.menu.copyTo"));
+        copyTo.setEnabled(false);
+        jPopupMenu1.add(copyTo);
+        copyToStickyNote.setText(BUNDLE.getString("cardPanel.menu.copyToStickyNote"));
+        copyToStickyNote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyToStickyNoteActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(copyToStickyNote);
 
         setBackground(new java.awt.Color(250, 245, 219));
         setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -257,28 +274,28 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(person, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(points, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
-                        .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(person, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(points, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(person, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(points, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
+                                .addGap(11, 11, 11)
+                                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(person, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(points, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -325,6 +342,11 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         lastPos = evt.getPoint();
     }//GEN-LAST:event_formMouseDragged
+
+
+    private void copyToStickyNoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemActionPerformed
+        cardWallManager.copyToStickNote(cardPosition);
+    }//GEN-LAST:event_deleteItemActionPerformed
 
     private void deleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemActionPerformed
         cardWallManager.deleteCard(cardPosition);
@@ -386,11 +408,14 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTextField person;
     private javax.swing.JTextField points;
     private javax.swing.JMenuItem redColour;
     private javax.swing.JTextField title;
     private javax.swing.JMenuItem yellowColour;
+    private javax.swing.JMenuItem copyToStickyNote;
+    private javax.swing.JMenuItem copyTo;
     // End of variables declaration//GEN-END:variables
 
 }

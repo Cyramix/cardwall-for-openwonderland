@@ -24,6 +24,9 @@ import com.sldrjp.wonderland.modules.cardwall.common.CardWallSyncMessage;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
+import org.jdesktop.wonderland.client.cell.utils.CellCreationException;
+import org.jdesktop.wonderland.client.cell.utils.CellUtils;
+import org.jdesktop.wonderland.modules.rockwellcollins.stickynote.common.cell.StickyNoteCellServerState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -157,7 +160,7 @@ public class CardWallManager {
         } else {
             int actualColumnID = getActualColumnID(cardState);
             cardState.setColumnID(actualColumnID);
-            logger.warning("relative column:" + cardState.getRelativeColumnID() + " actual column:" + actualColumnID);
+            logger.fine("relative column:" + cardState.getRelativeColumnID() + " actual column:" + actualColumnID);
             if (cards[actualColumnID][cardState.getRowID()] != null) {
                 if (cards[actualColumnID][cardState.getRowID()].getCardState().toString().equals(cardState.toString())) {
                     throw new CardWallException(CardWallException.SAME_CARD_AT_LOCATION_MSG + actualColumnID + "," + cardState.getRowID(), CardWallException.SAME_CARD_AT_LOCATION);
@@ -509,6 +512,7 @@ public class CardWallManager {
         // rebuild the layout
         masterPanel.reconfigurePanel(newState);
         populateData(newState);
+        state = newState;
         if (sendMessage) {
             cell.sendMessage(CardWallSyncMessage.COMPLETE_STATE, newState);
         }
@@ -565,5 +569,21 @@ public class CardWallManager {
         }
 
 
+    }
+
+    public void copyToStickNote(CardPosition cardPosition) {
+        CardWallCardCellClientState card = getCard(cardPosition.column, cardPosition.row);
+
+        StickyNoteCellServerState stickyNote = new org.jdesktop.wonderland.modules.rockwellcollins.stickynote.common.cell.StickyNoteCellServerState();
+        stickyNote.setNoteText(card.getTitle() + "\n" + card.getDetail());
+        Color colour = new Color(card.getColour());
+        String colourString = colour.getRed()+":" + colour.getGreen() + ":" + colour.getBlue();
+        stickyNote.setColor(colourString);
+        try {
+            CellUtils.createCell(stickyNote);
+        } catch (CellCreationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        //To change body of created methods use File | Settings | File Templates.
     }
 }

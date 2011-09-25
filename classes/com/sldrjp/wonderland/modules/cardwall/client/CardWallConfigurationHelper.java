@@ -20,6 +20,7 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClient
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class CardWallConfigurationHelper {
             } else {
                 // make sure this section can be deleted
                 if (originalState.getSectionStates().get(i).getNumberOfColumns() > 0) {
-                   throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION);
+                    throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION);
                 }
             }
         }
@@ -165,7 +166,7 @@ public class CardWallConfigurationHelper {
         newState.setNumberOfColumns(numberOfColumns);
         newState.setNumberOfRows(numberOfRows);
 
-
+        List<CardWallCardCellClientState> newCards = new ArrayList<CardWallCardCellClientState>();
         for (int i = 0; i < workingColumnLayout.length; i++) {
             if (workingColumnLayout[i] > 0) {
                 if (i < originalSections.size()) {
@@ -175,12 +176,12 @@ public class CardWallConfigurationHelper {
                     section.setStartColumn(-1);
                     section.setEndColumn(-1);
                     section.setColumnPositions(-1);
-                    adjustCardsPositions(originalState.getCards(), i, workingSectionOrder[i], numberOfRows, section.getNumberOfColumns());
+                    newCards.addAll(adjustCardsPositions(originalState.getCards(), i, workingSectionOrder[i], numberOfRows, section.getNumberOfColumns()));
                     newSections[workingSectionOrder[i]] = section;
                 }
             }
         }
-
+        newState.setCards(newCards);
         List<CardWallSectionCellClientState> newSectionsList = Arrays.asList(newSections);
         newState.setSectionStates(newSectionsList);
 
@@ -195,23 +196,28 @@ public class CardWallConfigurationHelper {
 
         }
 
-        newState.setCards(originalState.getCards());
+//        newState.setCards(originalState.getCards());
         return newState;
     }
 
-    protected void adjustCardsPositions(List<CardWallCardCellClientState> cards, int oldSectionID, int newSectionID, int numberOfRows, int sectionNumberOfColumns) {
+    protected List<CardWallCardCellClientState> adjustCardsPositions(List<CardWallCardCellClientState> cards, int oldSectionID, int newSectionID, int numberOfRows, int sectionNumberOfColumns) {
+        List<CardWallCardCellClientState> newCards = new ArrayList<CardWallCardCellClientState>();
+
         for (int j = 0; j < cards.size(); j++) {
             CardWallCardCellClientState card = cards.get(j);
             if (card.getSectionID() == oldSectionID) {
-                card.setSectionID(newSectionID);
-                card.setColumnID(-1);
+                CardWallCardCellClientState newCard = card.getCopyAsClientState();
+                newCard.setSectionID(newSectionID);
+                newCard.setColumnID(-1);
                 if ((card.getRowID() >= numberOfRows) || (card.getRelativeColumnID() >= sectionNumberOfColumns)) {
-                    card.setRelativeColumnID(-1);
-                    card.setRowID(-1);
-                    card.setColumnID(-1);
+                    newCard.setRelativeColumnID(-1);
+                    newCard.setRowID(-1);
+                    newCard.setColumnID(-1);
                 }
+                newCards.add(newCard);
             }
         }
+        return newCards;
     }
 
     public String[] getTitles() {
