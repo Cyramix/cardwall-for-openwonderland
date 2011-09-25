@@ -64,7 +64,7 @@ public class TestCardWallMessageHandler {
         message.setCardClientState(cardState);
         handler.handleMessage(message);
         assertEquals("Should have three cards", 3, cellState.getCards().size());
-        CardWallCardCellClientState addedCardState = manager.getCard(2, 2);
+        CardWallCardCellClientState addedCardState = manager.getCard(6, 2);
         assertEquals("incorrect card added", cardState.toString(), addedCardState.toString());
         assertEquals("Expected one showcard called on Panel", 1, masterPanelMock.getShowCardCalled());
         assertEquals("no messages should have been sent", 0, cell.getMessages().size());

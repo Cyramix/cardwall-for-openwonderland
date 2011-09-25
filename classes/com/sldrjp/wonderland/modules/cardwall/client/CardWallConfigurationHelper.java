@@ -77,15 +77,30 @@ public class CardWallConfigurationHelper {
 
 
         // first check if the order is the same; at the same time count the number of rows with column values greater than 0
+        boolean[] tempLayout = new boolean[columnLayout.length];
+        for (int i = 0; i < tempLayout.length; i++) {
+            tempLayout[i] = false;
+        }
         int numberOfSectionsWithColumns = 0;
         for (int i = 0; i < columnLayout.length; i++) {
             if (columnLayout[i] > 0) {
                 numberOfSectionsWithColumns++;
+                try {
+                    tempLayout[sectionOrder[i]] = true;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_SECTION_OUT_OF_RANGE_ERROR);
+                }
             }
         }
         if (numberOfSectionsWithColumns != numberOfSections) {
             changed = false;
             throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NUMBER_COLUMNS_ERROR);
+        }
+
+        for (int i = 0; i < numberOfSections; i++) {
+            if (!tempLayout[i]) {
+                throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_MISSING_SECTION_ERROR);
+            }
         }
 
         // now compare the existing sections with table
@@ -102,6 +117,9 @@ public class CardWallConfigurationHelper {
                 changed = true;
             }
         }
+
+        // are all the sections present
+
 
         // preserve the data
         this.numberOfColumns = numberOfColumns;
@@ -136,7 +154,7 @@ public class CardWallConfigurationHelper {
         }
 
         List<CardWallSectionCellClientState> originalSections = originalState.getSectionStates();
-        CardWallSectionCellClientState [] newSections = new CardWallSectionCellClientState[numberOfSections];
+        CardWallSectionCellClientState[] newSections = new CardWallSectionCellClientState[numberOfSections];
 
         CardWallCellClientState newState = new CardWallCellClientState();
         newState.setNumberOfColumns(numberOfColumns);
@@ -158,7 +176,7 @@ public class CardWallConfigurationHelper {
             }
         }
 
-        List<CardWallSectionCellClientState> newSectionsList =Arrays.asList(newSections);
+        List<CardWallSectionCellClientState> newSectionsList = Arrays.asList(newSections);
         newState.setSectionStates(newSectionsList);
 
 
@@ -168,7 +186,7 @@ public class CardWallConfigurationHelper {
             CardWallSectionCellClientState cardWallSectionCellClientState = newSectionsList.get(i);
             cardWallSectionCellClientState.setStartColumn(startingColumn);
             startingColumn += cardWallSectionCellClientState.getNumberOfColumns();
-            cardWallSectionCellClientState.setEndColumn(startingColumn-1);
+            cardWallSectionCellClientState.setEndColumn(startingColumn - 1);
 
         }
 
@@ -182,7 +200,7 @@ public class CardWallConfigurationHelper {
             if (card.getSectionID() == oldSectionID) {
                 card.setSectionID(newSectionID);
                 card.setColumnID(-1);
-                if ((card.getRowID() >= numberOfRows) ||(card.getRelativeColumnID() >= sectionNumberOfColumns)) {
+                if ((card.getRowID() >= numberOfRows) || (card.getRelativeColumnID() >= sectionNumberOfColumns)) {
                     card.setRelativeColumnID(-1);
                     card.setRowID(-1);
                     card.setColumnID(-1);

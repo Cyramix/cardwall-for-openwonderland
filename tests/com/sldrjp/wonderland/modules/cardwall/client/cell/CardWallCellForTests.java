@@ -19,6 +19,7 @@ package com.sldrjp.wonderland.modules.cardwall.client.cell;
 import com.sldrjp.wonderland.modules.cardwall.common.CardPosition;
 import com.sldrjp.wonderland.modules.cardwall.common.CardWallSyncMessage;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
+import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import org.jdesktop.wonderland.common.cell.CellStatus;
 import org.jdesktop.wonderland.common.cell.state.CellClientState;
 
@@ -39,31 +40,39 @@ public class CardWallCellForTests extends CardWallCell {
         super(null, null);
     }
 
-    List <CardWallSyncMessage> messages = new ArrayList<CardWallSyncMessage> ();
+    List<CardWallSyncMessage> messages = new ArrayList<CardWallSyncMessage>();
 
     @Override
     public void setClientState(CellClientState clientState) {
-         //To change body of overridden methods use File | Settings | File Templates.
+        //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     protected void setStatus(CellStatus status, boolean increasing) {
-           //To change body of overridden methods use File | Settings | File Templates.
+        //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     public void processMessage(CardWallSyncMessage cardWallMessage) {
-          //To change body of overridden methods use File | Settings | File Templates.
+        //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     public void sendMessage(int messageType, CardPosition position, CardWallCardCellClientState card) {
-          messages.add(prepareMessage(messageType,position,card));
+        messages.add(prepareMessage(messageType, position, card));
     }
 
     @Override
     public void sendMessage(int messageType, int i, String title) {
-        messages.add(prepareMessage(messageType,i,title));
+        messages.add(prepareMessage(messageType, i, title));
+    }
+
+
+    @Override
+    public void sendMessage(int messageType, CardWallCellClientState state) {
+
+
+        messages.add(prepareMessage(messageType, state));
     }
 
     public List<CardWallSyncMessage> getMessages() {

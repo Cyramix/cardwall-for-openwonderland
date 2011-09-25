@@ -243,10 +243,5 @@ public class TestCardWallManager {
     }
 
 
-    @Test
-    public void testReconfigureCardWall() {
-        manager.reConfigureWall(null, true);
-        assertEquals("Did not remove correct number of panels", 10, masterPanelMock.getRemovedPanels());
-        assertTrue("Repaint called", MethodCalled.wasCalled("removeAndRepaint"));
-    }
+
 }

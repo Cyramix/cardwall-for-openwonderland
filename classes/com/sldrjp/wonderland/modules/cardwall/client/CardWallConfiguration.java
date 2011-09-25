@@ -31,6 +31,8 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientStat
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -118,6 +120,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         sectionTable = new javax.swing.JTable();
         numberOfColumnsText = new javax.swing.JTextField();
+        numberOfColumnsText.setPreferredSize(new Dimension(50, 20));
         numberOfColumnsText.addFocusListener(new java.awt.event.FocusListener() {
             public void focusGained(FocusEvent e) {
                 // do nothing
@@ -128,6 +131,8 @@ public class CardWallConfiguration extends javax.swing.JDialog {
             }
         });
         numberOfRowsText = new javax.swing.JTextField();
+        numberOfRowsText.setPreferredSize(new Dimension(50, 20));
+
         numberOfRowsText.addFocusListener(new java.awt.event.FocusListener() {
             public void focusGained(FocusEvent e) {
                 // do nothing
@@ -140,6 +145,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
         jRadioButton2 = new javax.swing.JRadioButton();
         numberOfSectionsText = new javax.swing.JTextField();
+        numberOfSectionsText.setPreferredSize(new Dimension(50, 20));
         numberOfSectionsText.addFocusListener(new java.awt.event.FocusListener() {
             public void focusGained(FocusEvent e) {
                 // do nothing
@@ -188,6 +194,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         numberOfSectionsText.setText("");
 
         jLabel4.setText(BUNDLE.getString("configuration.label.cardStyle"));
+
 
         jRadioButton1.setText(BUNDLE.getString("configuration.label.agileModel"));
 
@@ -248,6 +255,10 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                                 .addGap(42, 42, 42))
         );
 
+        jLabel4.setVisible(false);
+        jRadioButton1.setVisible(false);
+        jRadioButton2.setVisible(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -281,17 +292,26 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
         CardWallConfigurationHelper helper = new CardWallConfigurationHelper(state);
 
-        if (testNewModel(helper)) {
-            if (helper.isChanged()) {
-                newState = helper.getNewState();
-                layoutChangesMade = true;
-            } else if (helper.isSectionTitleChanged()){
-                titles = helper.getTitles();
-                titleChangesMade = true;
+        try {
+            if (testNewModel(helper)) {
+                if (helper.isChanged()) {
+                    newState = helper.getNewState();
+                    layoutChangesMade = true;
+                } else if (helper.isSectionTitleChanged()) {
+                    titles = helper.getTitles();
+                    titleChangesMade = true;
+                }
+                setVisible(false);
             }
+        } catch (CardWallDialogDataException e) {
+            JOptionPane.showMessageDialog(this, "error");
         }
 
-        setVisible(false);
+
+
+
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -324,16 +344,21 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         if (columnError || rowError || sectionError) {
             okButton.setEnabled(false);
         } else {
-            okButton.setEnabled(testNewModel());
+            try {
+                okButton.setEnabled(testNewModel());
+            } catch (CardWallDialogDataException e) {
+               okButton.setEnabled(false);
+                JOptionPane.showMessageDialog(this, e.getErrorMessage());
+            }
 
         }
     }
 
-    private boolean testNewModel() {
+    private boolean testNewModel() throws CardWallDialogDataException {
         return testNewModel(new CardWallConfigurationHelper(state));
     }
 
-    private boolean testNewModel(CardWallConfigurationHelper helper) {
+    private boolean testNewModel(CardWallConfigurationHelper helper) throws CardWallDialogDataException {
 
         int newNumberOfRows = -1;
         int newNumberOfColumns = -1;
@@ -369,9 +394,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
             helper.testNewModel(newNumberOfRows, newNumberOfColumns, newNumberOfSections, sectionOrder, titles, columnLayout);
         } catch (NumberFormatException e) {
 
-            return false;
-        } catch (CardWallDialogDataException e) {
-            return false;
+            throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NON_NUMERIC);
         }
         return true;
     }
@@ -465,9 +488,11 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
     private String[] titles;
 
-    public  String[] getTitles(){
+    public String[] getTitles() {
         return titles;
-    };
+    }
+
+    ;
 
     public boolean isTitleChanged() {
         return titleChangesMade;  //To change body of created methods use File | Settings | File Templates.
