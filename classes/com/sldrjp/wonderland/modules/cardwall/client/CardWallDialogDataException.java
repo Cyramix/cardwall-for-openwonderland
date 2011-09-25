@@ -25,6 +25,8 @@ class CardWallDialogDataException extends Throwable {
     private static final String CARDWALL_CONFIGURATION_MISSING_SECTION_ERROR_KEY = "errorMessage.missingSection";
     public static final int CARDWALL_CONFIGURATION_SECTION_OUT_OF_RANGE_ERROR = 4;
     private static final String CARDWALL_CONFIGURATION_SECTION_OUT_OF_RANGE_ERROR_KEY = "errorMessage.sectionOutOfRange";
+    public static final int CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION = 5;
+    private static final String CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION_KEY = "errorMessage.cannotDeleteSection";
 
 
     private int errorType = 0;
@@ -61,6 +63,9 @@ class CardWallDialogDataException extends Throwable {
 
             case CARDWALL_CONFIGURATION_SECTION_OUT_OF_RANGE_ERROR:
                 key = CARDWALL_CONFIGURATION_SECTION_OUT_OF_RANGE_ERROR_KEY;
+                break;
+            case CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION:
+                key = CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION_KEY;
                 break;
 
 

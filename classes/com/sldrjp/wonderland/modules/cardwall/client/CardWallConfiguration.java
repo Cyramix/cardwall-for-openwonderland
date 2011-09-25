@@ -27,6 +27,7 @@
 
 package com.sldrjp.wonderland.modules.cardwall.client;
 
+import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
@@ -85,6 +86,11 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         model.addColumn(BUNDLE.getString("configuration.column.columns"));
         model.addColumn(BUNDLE.getString("configuration.column.canDelete"));
 
+        for (int i = 0; i < state.getCards().size(); i++) {
+            CardWallCardCellClientState cardState = state.getCards().get(i);
+            sectionStates.get(cardState.getSectionID()).incrementCards();
+
+        }
         int i = 0;
         for (CardWallSectionCellClientState sectionState : sectionStates) {
             String row[] = new String[4];
@@ -99,6 +105,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
 
     }
+
 
     /**
      * This method is called from within the constructor to
@@ -155,7 +162,9 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                 numberOfSectionsTextFocusLost(e);
             }
         });
+        jLabel5= new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5.setForeground(Color.RED);
         jRadioButton1 = new javax.swing.JRadioButton();
 
         jCheckBox2.setText("jCheckBox2");
@@ -185,6 +194,15 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                 new String[]{}
         ));
         jScrollPane1.setViewportView(sectionTable);
+        sectionTable.addFocusListener(new java.awt.event.FocusListener() {
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            public void focusLost(FocusEvent e) {
+                sectionTableFocusLost(e);
+            }
+        });
 
         numberOfColumnsText.setText("");
         numberOfRowsText.setText("");
@@ -194,6 +212,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         numberOfSectionsText.setText("");
 
         jLabel4.setText(BUNDLE.getString("configuration.label.cardStyle"));
+        jLabel5.setText("");
 
 
         jRadioButton1.setText(BUNDLE.getString("configuration.label.agileModel"));
@@ -209,6 +228,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                                                 .addGap(10, 10, 10)
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(jLabel4)
+                                                        .addComponent(jLabel5)
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                                 .addComponent(jRadioButton1)
                                                                 .addGap(18, 18, 18)
@@ -248,6 +268,9 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                 .addGap(18, 18, 18)
+                                .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jRadioButton1)
@@ -304,12 +327,8 @@ public class CardWallConfiguration extends javax.swing.JDialog {
                 setVisible(false);
             }
         } catch (CardWallDialogDataException e) {
-            JOptionPane.showMessageDialog(this, "error");
+             JOptionPane.showMessageDialog(this, e.getErrorMessage());
         }
-
-
-
-
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -346,12 +365,24 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         } else {
             try {
                 okButton.setEnabled(testNewModel());
+                jLabel5.setText("");
             } catch (CardWallDialogDataException e) {
-               okButton.setEnabled(false);
-                JOptionPane.showMessageDialog(this, e.getErrorMessage());
+                okButton.setEnabled(false);
+                showExceptionErrorMessage(e);
             }
 
         }
+    }
+
+    private boolean showingErrorMessage = false;
+
+    private void showExceptionErrorMessage(CardWallDialogDataException e) {
+        jLabel5.setText(e.getErrorMessage());
+//        if (!showingErrorMessage) {
+//            showingErrorMessage = true;
+//            JOptionPane.showMessageDialog(this, e.getErrorMessage());
+//            showingErrorMessage = false;
+//        }
     }
 
     private boolean testNewModel() throws CardWallDialogDataException {
@@ -412,6 +443,11 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
     }
 
+    private void sectionTableFocusLost(FocusEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        setOKButtonState();
+
+    }
+
     private void numberOfRowsTextFocusLost(FocusEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // make sure the value is valid
 
@@ -465,6 +501,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
     private javax.swing.JLabel labelNumberOfColumns;
     private javax.swing.JLabel labelNumberOfSections;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;

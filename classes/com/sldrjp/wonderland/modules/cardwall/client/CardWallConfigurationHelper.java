@@ -90,6 +90,11 @@ public class CardWallConfigurationHelper {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_SECTION_OUT_OF_RANGE_ERROR);
                 }
+            } else {
+                // make sure this section can be deleted
+                if (originalState.getSectionStates().get(i).getNumberOfColumns() > 0) {
+                   throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION);
+                }
             }
         }
         if (numberOfSectionsWithColumns != numberOfSections) {

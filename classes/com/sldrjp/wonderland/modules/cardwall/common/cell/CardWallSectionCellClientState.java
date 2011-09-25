@@ -104,7 +104,7 @@ public class CardWallSectionCellClientState implements StateConvertable, Seriali
     }
 
     public boolean isCanDelete() {
-        return numberOfCards > 0;
+        return numberOfCards <= 0;
     }
 
 
