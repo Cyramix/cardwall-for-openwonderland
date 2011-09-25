@@ -176,7 +176,7 @@ public class CardWallConfigurationHelper {
         return newState;
     }
 
-    private void adjustCardsPositions(List<CardWallCardCellClientState> cards, int oldSectionID, int newSectionID, int numberOfRows, int sectionNumberOfColumns) {
+    protected void adjustCardsPositions(List<CardWallCardCellClientState> cards, int oldSectionID, int newSectionID, int numberOfRows, int sectionNumberOfColumns) {
         for (int j = 0; j < cards.size(); j++) {
             CardWallCardCellClientState card = cards.get(j);
             if (card.getSectionID() == oldSectionID) {

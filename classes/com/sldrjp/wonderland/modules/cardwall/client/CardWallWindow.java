@@ -67,7 +67,7 @@ public class CardWallWindow extends WindowSwing {
             throws InstantiationException {
 
         super(app, Type.PRIMARY, width, height, decorated, pixelScale);
-        logger.fine("CardWallWindow - width " + width + " height " +height);
+        logger.fine("CardWallWindow - width " + width + " height " + height);
         this.cell = cell;
 
         setTitle(BUNDLE.getString("title.cardWall"));
@@ -77,12 +77,17 @@ public class CardWallWindow extends WindowSwing {
                 public void run() {
                     // This must be invoked on the AWT Event Dispatch Thread
                     masterPanel = new MasterPanelImpl(cell, clientState);
+                    logger.warning("masterPanel constructor completed");
                     cardWallManager = new CardWallManager(cell, clientState, masterPanel);
+                    logger.warning("cardWallManager constructor completed");
                     // add details from current client state
                     masterPanel.configurePanel(clientState);
+                    logger.warning("masterPanel configurePanel completed");
                     cardWallManager.populateData(clientState);
+                    logger.warning("cardwallmanager populatedata completed");
                     masterPanel.setMinimumSize(new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()));
                     logger.fine("initial size - " + new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()).toString());
+
 
                 }
             });
@@ -92,8 +97,10 @@ public class CardWallWindow extends WindowSwing {
 
         // Parent to Wonderland main window for proper focus handling
         JmeClientMain.getFrame().getCanvas3DPanel().add(masterPanel);
-//        JmeClientMain.getFrame().getCanvas3DPanel().setMinimumSize(new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()));
         setComponent(masterPanel);
+        logger.warning("completed");
+//        JmeClientMain.getFrame().getCanvas3DPanel().setMinimumSize(new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()));
+
     }
 
     public MasterPanel getMasterPanel() {

@@ -36,7 +36,9 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellCli
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -60,11 +62,15 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
      * Creates new form MasterPanelImpl
      */
     public MasterPanelImpl(CardWallCell cell, CardWallCellClientState state) {
+        logger.warning("constructor");
+        logger.setLevel(Level.FINE);
         gridBagLayout = new GridBagLayout();
         this.cell = cell;
         this.state = state;
         this.setLayout(gridBagLayout);
         initComponents();
+
+        logger.warning("exit constructor");
 
     }
 
@@ -101,7 +107,8 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
 
     //************************
 
-    public void addSection(Section section) {
+    public void addSection(final Section section) {
+
 
         SectionHeaderImpl sectionHeader = (SectionHeaderImpl) getSectionHeader();
         SelectCardImpl selectCard = (SelectCardImpl) getSelectCard();
@@ -125,6 +132,7 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
         add(selectCard, constraints);
         selectCard.setVisible(true);
         validate();
+
     }
 
 
@@ -134,11 +142,14 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
      * @param card
      * @param cardWallManager
      */
-    public void showCard(Card card, CardWallManager cardWallManager) {
+    public void showCard(final Card card, CardWallManager cardWallManager) {
 
-        CardPanelImpl cardPanel = new CardPanelImpl();
+
+        final CardPanelImpl cardPanel = new CardPanelImpl();
         cardPanel.setMasterPanel(this, cardWallManager);
         card.setCardPanel(cardPanel);
+
+
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = card.getCardState().getColumnID();
         constraints.gridy = card.getCardState().getRowID() + 1;
@@ -149,6 +160,8 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
                 card.getCardState().getPerson(), card.getCardState().getPoints());
         cardPanel.setVisible(true);
         validate();
+        repaint();
+
 
     }
 
@@ -173,7 +186,10 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
 
     }
 
-    public void configurePanel(CardWallCellClientState clientState) {
+    public void configurePanel(final CardWallCellClientState clientState) {
+
+        final MasterPanelImpl panel = this;
+
         // assume we are starting with a blank slate
         // insert the dummy controls to set the vertical positions correctly
         internalPanel = new JPanel();
@@ -184,7 +200,7 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
         gridHeight = 2 + clientState.getNumberOfRows() + 1;
         constraints.gridheight = gridHeight;
 
-        this.add(internalPanel, constraints);
+        panel.add(internalPanel, constraints);
 
         vertPane = new JPanel[clientState.getNumberOfRows()];
         for (int i = 0; i < clientState.getNumberOfRows(); i++) {
@@ -194,7 +210,7 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
             vertPane[i] = new JPanel();
             vertPane[i].setMinimumSize(new Dimension(1, CardWallDefaultConfiguration.BLOCK_HEIGHT));
             vertPane[i].setPreferredSize(new Dimension(1, CardWallDefaultConfiguration.BLOCK_HEIGHT));
-            this.add(vertPane[i], constraints);
+            panel.add(vertPane[i], constraints);
         }
 
 
@@ -206,17 +222,21 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
             horzPane[i] = new JPanel();
             horzPane[i].setMinimumSize(new Dimension(CardWallDefaultConfiguration.BLOCK_WIDTH, 1));
             horzPane[i].setPreferredSize(new Dimension(CardWallDefaultConfiguration.BLOCK_WIDTH, 1));
-            this.add(horzPane[i], constraints);
+            panel.add(horzPane[i], constraints);
         }
+
+
     }
 
 
     public void removeCard(final Card card) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                logger.fine("enter run for removeCard");
                 card.getCardPanel().setVisible(false);
                 remove(card.getCardPanel());
                 validate();
+                logger.fine("exit run for showCard");
             }
 
         });
@@ -226,75 +246,93 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-
+                logger.fine("enter run for updateCard");
                 CardPanelImpl panel = card.getCardPanel();
                 panel.updateCard(state.getColour(), state.getTitle(), state.getDetail(), state.getPerson(), state.getPoints());
                 panel.repaint();
+                logger.fine("exit run for updateCard");
             }
         });
     }
 
 
-    public void moveCard(Card card) {
-        CardPanelImpl panel = card.getCardPanel();
-        CardWallCardCellClientState state = card.getCardState();
+    public void moveCard(final Card card) {
+        final CardPanelImpl panel = card.getCardPanel();
+        final CardWallCardCellClientState state = card.getCardState();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (panel == null) {
+                    showCard(card, cardWallManager);
 
-        if (panel == null) {
-            showCard(card, cardWallManager);
-
-        } else {
+                } else {
 
 
-            GridBagConstraints constraints = gridBagLayout.getConstraints(panel);
-            constraints.gridx = state.getColumnID();
-            constraints.gridy = state.getRowID() + 1;
-            panel.setCardPosition(state.getCardPosition());
-            panel.invalidate();
-            constraints.weightx = 0.5;
-            gridBagLayout.setConstraints(panel, constraints);
-            validate();
-        }
-        repaint();
+                    logger.fine("enter run for moveCard");
+                    GridBagConstraints constraints = gridBagLayout.getConstraints(panel);
+                    constraints.gridx = state.getColumnID();
+                    constraints.gridy = state.getRowID() + 1;
+                    panel.setCardPosition(state.getCardPosition());
+                    panel.invalidate();
+                    constraints.weightx = 0.5;
+                    gridBagLayout.setConstraints(panel, constraints);
+                    validate();
+                    repaint();
+                    logger.fine("exit run for moveCard");
+                }
+
+
+                repaint();
+
+            }
+        });
     }
 
-    public void setCardWallManager(CardWallManager cardWallManager) {
+    public void setCardWallManager
+            (CardWallManager
+                     cardWallManager) {
         this.cardWallManager = cardWallManager;
     }
 
-    public CardWallManager getCardWallManager() {
+    public CardWallManager getCardWallManager
+            () {
         return cardWallManager;
     }
 
-    public SectionHeader getSectionHeader() {
+    public SectionHeader getSectionHeader
+            () {
         SectionHeaderImpl sectionHeader = new SectionHeaderImpl();
         sectionHeader.setMasterPanel(this, cardWallManager);
         return sectionHeader;
 
     }
 
-    public SelectCard getSelectCard() {
+    public SelectCard getSelectCard
+            () {
         return new SelectCardImpl(cardWallManager);
     }
 
     private java.util.List<Component> toRemove = new ArrayList<Component>();
 
-    public void queueRemovePanel(final Component component) {
+    public void queueRemovePanel
+            (
+                    final Component component) {
         toRemove.add(component);
     }
 
-    public void removeAndRepaint() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                for (int i = 0; i < toRemove.size(); i++) {
-                    Component component = toRemove.get(i);
-                    component.setVisible(false);
-                    remove(component);
-                    validate();
-                }
-                repaint();
-                toRemove = new ArrayList<Component>();
-            }
-        });
+    public void removeAndRepaint
+            () {
+
+        logger.fine("enter run for removeAndRepaint");
+        for (int i = 0; i < toRemove.size(); i++) {
+            Component component = toRemove.get(i);
+            component.setVisible(false);
+            remove(component);
+            validate();
+        }
+        repaint();
+        toRemove = new ArrayList<Component>();
+        logger.fine("exit run for removeAndRepaint");
+
 
     }
 }

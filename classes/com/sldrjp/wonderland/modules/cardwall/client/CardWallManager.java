@@ -27,6 +27,7 @@ import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellCli
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -155,6 +156,8 @@ public class CardWallManager {
             addToAdditionalSection(cardState);
         } else {
             int actualColumnID = getActualColumnID(cardState);
+            cardState.setColumnID(actualColumnID);
+            logger.warning("relative column:" + cardState.getRelativeColumnID() + " actual column:" + actualColumnID);
             if (cards[actualColumnID][cardState.getRowID()] != null) {
                 if (cards[actualColumnID][cardState.getRowID()].getCardState().toString().equals(cardState.toString())) {
                     throw new CardWallException(CardWallException.SAME_CARD_AT_LOCATION_MSG + actualColumnID + "," + cardState.getRowID(), CardWallException.SAME_CARD_AT_LOCATION);
@@ -363,7 +366,7 @@ public class CardWallManager {
                     }
                 }
                 // set the relative position
-                if (cardWallCardCellClientState.getRelativeColumnID() == -1) {
+                if ((cardWallCardCellClientState.getRelativeColumnID() == -1) && (cardWallCardCellClientState.getColumnID() >= 0)) {
                     cardWallCardCellClientState.setRelativeColumnID(relativeColumn(cardWallCardCellClientState.getSectionID(), cardWallCardCellClientState.getColumnID()));
                     cell.sendMessage(CardWallSyncMessage.UPDATE_SERVER_CARD_STATE_ONLY, null, cardWallCardCellClientState);
                 }
@@ -468,18 +471,36 @@ public class CardWallManager {
         CardWallConfiguration configuration = new CardWallConfiguration(frame, true);
         configuration.setCardWallState(state);
         configuration.setVisible(true);
-        if (configuration.isDirty()) {
-            if (configuration.isLayoutChanged()) {
-                reConfigureWall(configuration.getNewState(), true);
-            } else if (configuration.isTitleChanged()) {
-                changeTitles(configuration.getTitles());
 
-            }
+
+
+        if (configuration.isDirty()) {
+            final CardWallCellClientState newState = configuration.getNewState();
+            final String [] titles = configuration.getTitles();
+            final boolean layoutChanged = configuration.isLayoutChanged();
+            final boolean titleChanged = configuration.isTitleChanged();
+//            try {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if (layoutChanged) {
+                            reConfigureWall(newState, true);
+                        } else if (titleChanged) {
+                            changeTitles(titles);
+
+                        }
+                    }
+                });
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            } catch (InvocationTargetException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
         }
         configuration.dispose();
     }
 
     public void reConfigureWall(CardWallCellClientState newState, boolean sendMessage) {
+
 
         // remove all existing cards from the master panel
         removeCardPanels();
