@@ -18,6 +18,7 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 
 import com.sldrjp.wonderland.modules.cardwall.common.MethodCalled;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
+import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
 
@@ -180,4 +181,7 @@ public class MasterPanelMock implements MasterPanel {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void reconfigurePanel(CardWallCellClientState clientState) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

@@ -163,6 +163,19 @@ public class CardWallCell extends App2DCell {
         return message;
     }
 
+       public void sendMessage(int messageType, CardWallCellClientState state) {
+        logger.fine("Sending message - " + messageType + " " + state.toString());
+        CardWallSyncMessage message = prepareMessage(messageType, state);
+        commComponent.sendMessage(message);
+    }
+
+    protected CardWallSyncMessage prepareMessage(int messageType,CardWallCellClientState state) {
+        CardWallSyncMessage message = new CardWallSyncMessage();
+        message.setMessageType(messageType);
+        message.setClientState(state);
+        return message;
+    }
+
     public void sendMessage(int messageType, int i, String title) {
         logger.fine("Sending message - " + messageType + " " + i + ":" + title);
         CardWallSyncMessage message = prepareMessage(messageType, i, title);

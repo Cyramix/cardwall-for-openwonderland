@@ -140,11 +140,12 @@ public class TestCardWallManager {
         assertEquals("No showcard should have been called", 0, masterPanelMock.getShowCardCalled());
 
         cardState.setSectionID(3);
-        cardState.setColumnID(4);
+        cardState.setColumnID(6);
+        cardState.setRelativeColumnID(0);
         cardState.setRowID(2);
         manager.addCard(cardState);
         // find card at 2,3
-        CardWallCardCellClientState addedCardState = manager.getCard(4, 2);
+        CardWallCardCellClientState addedCardState = manager.getCard(6, 2);
         assertEquals("incorrect card added", cardState.toString(), addedCardState.toString());
         assertEquals("Expected one showcard called on Panel", 1, masterPanelMock.getShowCardCalled());
 
@@ -214,6 +215,7 @@ public class TestCardWallManager {
         assertEquals("title should be the same", cardState.getTitle(), newCardState.getTitle());
         assertEquals("detail should be the same", cardState.getDetail(), newCardState.getDetail());
         assertEquals("section number should be 1", 1, newCardState.getSectionID());
+        assertEquals("relative column position should be 1", 1, newCardState.getRelativeColumnID());
         assertEquals("Expected one move card called on Panel", 1, masterPanelMock.getMoveCardCalled());
         assertEquals("one message should have been sent", 1, cell.getMessages().size());
         CardWallSyncMessage message = cell.getMessages().get(0);
@@ -243,7 +245,7 @@ public class TestCardWallManager {
 
     @Test
     public void testReconfigureCardWall() {
-        manager.reConfigureWall(null);
+        manager.reConfigureWall(null, true);
         assertEquals("Did not remove correct number of panels", 10, masterPanelMock.getRemovedPanels());
         assertTrue("Repaint called", MethodCalled.wasCalled("removeAndRepaint"));
     }

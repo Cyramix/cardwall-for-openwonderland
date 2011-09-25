@@ -17,6 +17,7 @@
 package com.sldrjp.wonderland.modules.cardwall.client;
 
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
+import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
 import java.awt.*;
@@ -56,4 +57,6 @@ public interface MasterPanel {
     void queueRemovePanel(Component component);
 
     void removeAndRepaint();
+
+    void reconfigurePanel(CardWallCellClientState clientState);
 }

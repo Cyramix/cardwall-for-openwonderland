@@ -16,9 +16,11 @@ package com.sldrjp.wonderland.modules.cardwall.client;
  *    limitations under the License.
  */
 
+import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallSectionCellClientState;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -132,7 +134,61 @@ public class CardWallConfigurationHelper {
         if (!changed) {
             return originalState;
         }
-        return new CardWallCellClientState();
+
+        List<CardWallSectionCellClientState> originalSections = originalState.getSectionStates();
+        CardWallSectionCellClientState [] newSections = new CardWallSectionCellClientState[numberOfSections];
+
+        CardWallCellClientState newState = new CardWallCellClientState();
+        newState.setNumberOfColumns(numberOfColumns);
+        newState.setNumberOfRows(numberOfRows);
+
+
+        for (int i = 0; i < workingColumnLayout.length; i++) {
+            if (workingColumnLayout[i] > 0) {
+                if (i < originalSections.size()) {
+                    CardWallSectionCellClientState section = originalSections.get(i);
+                    section.setSectionTitle(workingTitles[i]);
+                    section.setNumberOfColumns(workingColumnLayout[i]);
+                    section.setStartColumn(-1);
+                    section.setEndColumn(-1);
+                    section.setColumnPositions(-1);
+                    adjustCardsPositions(originalState.getCards(), i, workingSectionOrder[i], numberOfRows, section.getNumberOfColumns());
+                    newSections[workingSectionOrder[i]] = section;
+                }
+            }
+        }
+
+        List<CardWallSectionCellClientState> newSectionsList =Arrays.asList(newSections);
+        newState.setSectionStates(newSectionsList);
+
+
+        // set the starting columns for the sections
+        int startingColumn = 0;
+        for (int i = 0; i < newSectionsList.size(); i++) {
+            CardWallSectionCellClientState cardWallSectionCellClientState = newSectionsList.get(i);
+            cardWallSectionCellClientState.setStartColumn(startingColumn);
+            startingColumn += cardWallSectionCellClientState.getNumberOfColumns();
+            cardWallSectionCellClientState.setEndColumn(startingColumn-1);
+
+        }
+
+        newState.setCards(originalState.getCards());
+        return newState;
+    }
+
+    private void adjustCardsPositions(List<CardWallCardCellClientState> cards, int oldSectionID, int newSectionID, int numberOfRows, int sectionNumberOfColumns) {
+        for (int j = 0; j < cards.size(); j++) {
+            CardWallCardCellClientState card = cards.get(j);
+            if (card.getSectionID() == oldSectionID) {
+                card.setSectionID(newSectionID);
+                card.setColumnID(-1);
+                if ((card.getRowID() >= numberOfRows) ||(card.getRelativeColumnID() >= sectionNumberOfColumns)) {
+                    card.setRelativeColumnID(-1);
+                    card.setRowID(-1);
+                    card.setColumnID(-1);
+                }
+            }
+        }
     }
 
     public String[] getTitles() {

@@ -18,7 +18,6 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 
 import com.sldrjp.wonderland.modules.cardwall.common.CardWallSyncMessage;
 
-import javax.swing.*;
 import java.util.logging.Logger;
 
 /**
@@ -32,6 +31,7 @@ public class CardWallMessageHandler {
 
     private CardWallManager cardWallManager;
     private static final Logger logger = Logger.getLogger(CardWallMessageHandler.class.getName());
+
     public CardWallMessageHandler(CardWallManager cardWallManager) {
         this.cardWallManager = cardWallManager;
     }
@@ -57,7 +57,11 @@ public class CardWallMessageHandler {
             case CardWallSyncMessage.UPDATE_SECTION_TITLE:
                 cardWallManager.changeSectionTitle(cardWallMessage.getSection(), cardWallMessage.getText());
                 break;
+
+            case CardWallSyncMessage.COMPLETE_STATE:
+                cardWallManager.reConfigureWall(cardWallMessage.getClientState(), false);
+                break;
         }
-    //@todo process remaining message types
+        //@todo process remaining message types
     }
 }

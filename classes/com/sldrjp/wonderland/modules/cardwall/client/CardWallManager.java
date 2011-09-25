@@ -80,6 +80,7 @@ public class CardWallManager {
             Card card = new Card();
             CardWallCardCellClientState cardState = card.getCardState();
             cardState.setColumnID(position.column);
+            cardState.setRelativeColumnID(relativeColumn(section.getSectionNumber(), position.column));
             cardState.setRowID(position.row);
             cardState.setSectionID(sectionSelected);
             cards[position.column][position.row] = card;
@@ -150,27 +151,55 @@ public class CardWallManager {
      * @param cardState
      */
     public void showCard(CardWallCardCellClientState cardState) {
-        if (cardState.getColumnID() == -1) {
-
-
+        if (cardState.getRelativeColumnID() == -1) {
             addToAdditionalSection(cardState);
         } else {
-            if (cards[cardState.getColumnID()][cardState.getRowID()] != null) {
-                if (cards[cardState.getColumnID()][cardState.getRowID()].getCardState().toString().equals(cardState.toString())) {
-                    throw new CardWallException(CardWallException.SAME_CARD_AT_LOCATION_MSG + cardState.getColumnID() + "," + cardState.getRowID(), CardWallException.SAME_CARD_AT_LOCATION);
+            int actualColumnID = getActualColumnID(cardState);
+            if (cards[actualColumnID][cardState.getRowID()] != null) {
+                if (cards[actualColumnID][cardState.getRowID()].getCardState().toString().equals(cardState.toString())) {
+                    throw new CardWallException(CardWallException.SAME_CARD_AT_LOCATION_MSG + actualColumnID + "," + cardState.getRowID(), CardWallException.SAME_CARD_AT_LOCATION);
                 } else {
-                    throw new CardWallException(CardWallException.CARD_AT_LOCATION_MSG + cardState.getColumnID() + "," + cardState.getRowID(), CardWallException.CARD_AT_LOCATION);
+                    throw new CardWallException(CardWallException.CARD_AT_LOCATION_MSG + actualColumnID + "," + cardState.getRowID(), CardWallException.CARD_AT_LOCATION);
                 }
             }
             Card card = new Card();
             card.setCardState(cardState);
-            cards[cardState.getColumnID()][cardState.getRowID()] = card;
+            cards[actualColumnID][cardState.getRowID()] = card;
             masterPanel.showCard(card, this);
         }
+
+
+//    if(cardState.getColumnID()==-1)
+//
+//    {
+//
+//        addToAdditionalSection(cardState);
+//    }
+//
+//    else
+//
+//    {
+//        if (cards[cardState.getColumnID()][cardState.getRowID()] != null) {
+//            if (cards[cardState.getColumnID()][cardState.getRowID()].getCardState().toString().equals(cardState.toString())) {
+//                throw new CardWallException(CardWallException.SAME_CARD_AT_LOCATION_MSG + cardState.getColumnID() + "," + cardState.getRowID(), CardWallException.SAME_CARD_AT_LOCATION);
+//            } else {
+//                throw new CardWallException(CardWallException.CARD_AT_LOCATION_MSG + cardState.getColumnID() + "," + cardState.getRowID(), CardWallException.CARD_AT_LOCATION);
+//            }
+//        }
+//        Card card = new Card();
+//        card.setCardState(cardState);
+//        cards[cardState.getColumnID()][cardState.getRowID()] = card;
+//        masterPanel.showCard(card, this);
+//    }
+
+    }
+
+    private int getActualColumnID(CardWallCardCellClientState cardState) {
+        return getSection(cardState.getSectionID()).getStartColumn() + cardState.getRelativeColumnID();
     }
 
     private void addToAdditionalSection(CardWallCardCellClientState cardState) {
-        Section section = sections.get(cardState.getSectionID());
+        Section section = getSection(cardState.getSectionID());
         section.addAdditionalCard(cardState);
     }
 
@@ -205,7 +234,7 @@ public class CardWallManager {
     }
 
     public void updateCard(final CardWallCardCellClientState state) {
-        final Card card = cards[state.getColumnID()][state.getRowID()];
+        final Card card = cards[getActualColumnID(state)][state.getRowID()];
         card.getCardState().setTitle(state.getTitle());
         card.getCardState().setDetail(state.getDetail());
         masterPanel.updateCard(state, card);
@@ -265,12 +294,15 @@ public class CardWallManager {
             // can move card
             CardWallCardCellClientState state = card.getCardState();
             if (state.getColumnID() == -1) {
-                sections.get(state.getSectionID()).getSelectCard().removeFromSelectable(state);
+                getSection(state.getSectionID()).getSelectCard().removeFromSelectable(state);
             } else {
-                cards[state.getColumnID()][state.getRowID()] = null;
+                cards[getActualColumnID(state)][state.getRowID()] = null;
             }
             state.setRowID(possibleRow);
+
             state.setColumnID(possibleColumn);
+            state.setSectionID(getSectionID(possibleColumn));
+            state.setRelativeColumnID(relativeColumn(state.getSectionID(), possibleColumn));
             cards[possibleColumn][possibleRow] = card;
             masterPanel.moveCard(card);
             return state;
@@ -330,9 +362,22 @@ public class CardWallManager {
                         cardWallCardCellClientState.setSectionID(0); // by default put them all in the first section if we don't have any additional data
                     }
                 }
+                // set the relative position
+                if (cardWallCardCellClientState.getRelativeColumnID() == -1) {
+                    cardWallCardCellClientState.setRelativeColumnID(relativeColumn(cardWallCardCellClientState.getSectionID(), cardWallCardCellClientState.getColumnID()));
+                    cell.sendMessage(CardWallSyncMessage.UPDATE_SERVER_CARD_STATE_ONLY, null, cardWallCardCellClientState);
+                }
                 showCard(cardWallCardCellClientState);
             }
         }
+    }
+
+    protected int relativeColumn(int sectionID, int actualColumn) {
+        if (actualColumn == -1) {
+            return -1;
+        }
+        return actualColumn - getSection(sectionID).getStartColumn();
+
     }
 
     protected CardWallCardCellClientState getCard(int i, int i1) {
@@ -379,6 +424,7 @@ public class CardWallManager {
     private CardWallCardCellClientState moveCardToArchive(CardPosition cardPosition) {
         CardWallCardCellClientState cardToArchive = hideCard(cardPosition);
         cardToArchive.setColumnID(-1);
+        cardToArchive.setRelativeColumnID(-1);
         cardToArchive.setRowID(-1);
         Section section = sections.get(cardToArchive.getSectionID());
         section.addAdditionalCard(cardToArchive);
@@ -398,6 +444,7 @@ public class CardWallManager {
         Section section = sections.get(sectionNumber);
         CardPosition position = getFreePosition(section);
         state.setColumnID(position.column);
+        state.setRelativeColumnID(relativeColumn(sectionNumber, position.column));
         state.setRowID(position.row);
 
         if (position != null) {
@@ -423,7 +470,7 @@ public class CardWallManager {
         configuration.setVisible(true);
         if (configuration.isDirty()) {
             if (configuration.isLayoutChanged()) {
-//                reConfigureWall(configuration.getNewState());
+                reConfigureWall(configuration.getNewState(), true);
             } else if (configuration.isTitleChanged()) {
                 changeTitles(configuration.getTitles());
 
@@ -432,48 +479,45 @@ public class CardWallManager {
         configuration.dispose();
     }
 
-    public void reConfigureWall(CardWallCellClientState newState) {
+    public void reConfigureWall(CardWallCellClientState newState, boolean sendMessage) {
 
-        //move all cards located in areas to be removed to the respective archive
-
-
-        List<Card> currentCards = null;
         // remove all existing cards from the master panel
-        currentCards = removeCardPanels();
-
+        removeCardPanels();
         // remove all sections
         removeSectionPanels();
         // rebuild the layout
-        masterPanel.removeAndRepaint();
+        masterPanel.reconfigurePanel(newState);
+        populateData(newState);
+        if (sendMessage) {
+            cell.sendMessage(CardWallSyncMessage.COMPLETE_STATE, newState);
+        }
 
-
-        // populate as appropriate
-//            masterPanel.
     }
 
     private void removeSectionPanels() {
         for (int i = 0; i < sections.size(); i++) {
             Section section = sections.get(i);
             masterPanel.queueRemovePanel(section.getSectionHeader().getAsComponent());
+            section.setSectionHeader(null);
             masterPanel.queueRemovePanel(section.getSelectCard().getAsComponent());
+            section.setSelectCard(null);
         }
-        //To change body of created methods use File | Settings | File Templates.
+
     }
 
-    private List<Card> removeCardPanels() {
+    private void removeCardPanels() {
 
-        List<Card> currentCards = new ArrayList<Card>();
+
         // iterate through all the cards
         for (int i = 0; i < cards.length; i++) {
             for (int j = 0; j < cards[i].length; j++) {
                 if (cards[i][j] != null) {
-                    currentCards.add(cards[i][j]);
                     masterPanel.queueRemovePanel(cards[i][j].getCardPanel());
                     cards[i][j] = null;
                 }
             }
         }
-        return currentCards;
+
 
     }
 

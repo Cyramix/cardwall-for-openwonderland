@@ -82,8 +82,10 @@ public class Section {
 
     public void setSectionHeader(SectionHeader sectionHeader) {
         this.sectionHeader = sectionHeader;
-        sectionHeader.setSection(sectionNumber);
-        sectionHeader.setText(state.getSectionTitle());
+        if (sectionHeader != null) {
+            sectionHeader.setSection(sectionNumber);
+            sectionHeader.setText(state.getSectionTitle());
+        }
     }
 
     public SelectCard getSelectCard() {
@@ -92,7 +94,9 @@ public class Section {
 
     public void setSelectCard(SelectCard selectCard) {
         this.selectCard = selectCard;
-        selectCard.setSectionNumber(sectionNumber);
+        if (selectCard != null) {
+            selectCard.setSectionNumber(sectionNumber);
+        }
     }
 
     public int getNoOfColumns() {

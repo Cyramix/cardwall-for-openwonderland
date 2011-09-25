@@ -26,6 +26,7 @@ import org.jdesktop.wonderland.common.cell.state.CellServerState;
 import org.jdesktop.wonderland.modules.appbase.client.swing.SwingCellFactoryUtils;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -67,6 +68,9 @@ public class CardWallCellFactory implements CellFactorySPI {
     }
 
     public Image getPreviewImage() {
-        return null;
+
+        URL url = CardWallCellFactory.class.getResource("resources/CardWall-icon.png");
+        return Toolkit.getDefaultToolkit().createImage(url);
+
     }
 }

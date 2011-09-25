@@ -48,6 +48,9 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
             Logger.getLogger(MasterPanelImpl.class.getName());
     private GridBagLayout gridBagLayout;
     private CardWallManager cardWallManager;
+    private JPanel internalPanel;
+    private JPanel vertPane[];
+    private JPanel horzPane[];
 
     private int gridHeight = 0;
     CardWallCell cell;
@@ -85,7 +88,7 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
 
     //************************
 
-        private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         logger.fine("moused pressed " + evt.getPoint());
 
     }//GEN-LAST:event_formMousePressed
@@ -149,21 +152,41 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
 
     }
 
+    private void removeArrayOfComponents(JComponent[] components) {
+        for (int i = 0; i < components.length; i++) {
+            queueRemovePanel(components[i]);
+            components[i] = null;
+        }
+    }
+
+    public void reconfigurePanel(CardWallCellClientState clientState) {
+
+        removeArrayOfComponents(vertPane);
+        vertPane = null;
+        removeArrayOfComponents(horzPane);
+        horzPane = null;
+        queueRemovePanel(internalPanel);
+        internalPanel = null;
+        removeAndRepaint();
+        configurePanel(clientState);
+
+
+    }
 
     public void configurePanel(CardWallCellClientState clientState) {
         // assume we are starting with a blank slate
         // insert the dummy controls to set the vertical positions correctly
-        JPanel tpane = new JPanel();
-        tpane.setMinimumSize(new Dimension(1, clientState.getPreferredHeight()));
-        tpane.setPreferredSize(new Dimension(1, clientState.getPreferredHeight()));
+        internalPanel = new JPanel();
+        internalPanel.setMinimumSize(new Dimension(1, clientState.getPreferredHeight()));
+        internalPanel.setPreferredSize(new Dimension(1, clientState.getPreferredHeight()));
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = clientState.getNumberOfColumns();
         gridHeight = 2 + clientState.getNumberOfRows() + 1;
         constraints.gridheight = gridHeight;
 
-        this.add(tpane, constraints);
+        this.add(internalPanel, constraints);
 
-        JPanel vertPane[] = new JPanel[clientState.getNumberOfRows()];
+        vertPane = new JPanel[clientState.getNumberOfRows()];
         for (int i = 0; i < clientState.getNumberOfRows(); i++) {
             constraints = new GridBagConstraints();
             constraints.gridy = i + 1;
@@ -175,7 +198,7 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
         }
 
 
-        JPanel horzPane[] = new JPanel[clientState.getNumberOfColumns()];
+        horzPane = new JPanel[clientState.getNumberOfColumns()];
         for (int i = 0; i < clientState.getNumberOfColumns(); i++) {
             constraints = new GridBagConstraints();
             constraints.gridy = clientState.getNumberOfRows() + 3;
