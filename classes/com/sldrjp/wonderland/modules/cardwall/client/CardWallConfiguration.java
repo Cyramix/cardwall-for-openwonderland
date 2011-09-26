@@ -127,7 +127,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         sectionTable = new javax.swing.JTable();
         numberOfColumnsText = new javax.swing.JTextField();
-        numberOfColumnsText.setPreferredSize(new Dimension(50, 20));
+        numberOfColumnsText.setPreferredSize(new Dimension(50, 30));
         numberOfColumnsText.addFocusListener(new java.awt.event.FocusListener() {
             public void focusGained(FocusEvent e) {
                 // do nothing
@@ -138,7 +138,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
             }
         });
         numberOfRowsText = new javax.swing.JTextField();
-        numberOfRowsText.setPreferredSize(new Dimension(50, 20));
+        numberOfRowsText.setPreferredSize(new Dimension(50, 30));
 
         numberOfRowsText.addFocusListener(new java.awt.event.FocusListener() {
             public void focusGained(FocusEvent e) {
@@ -152,7 +152,7 @@ public class CardWallConfiguration extends javax.swing.JDialog {
 
         jRadioButton2 = new javax.swing.JRadioButton();
         numberOfSectionsText = new javax.swing.JTextField();
-        numberOfSectionsText.setPreferredSize(new Dimension(50, 20));
+        numberOfSectionsText.setPreferredSize(new Dimension(50, 30));
         numberOfSectionsText.addFocusListener(new java.awt.event.FocusListener() {
             public void focusGained(FocusEvent e) {
                 // do nothing

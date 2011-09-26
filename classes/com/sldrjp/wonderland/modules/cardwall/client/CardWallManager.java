@@ -476,23 +476,22 @@ public class CardWallManager {
         configuration.setVisible(true);
 
 
-
         if (configuration.isDirty()) {
             final CardWallCellClientState newState = configuration.getNewState();
-            final String [] titles = configuration.getTitles();
+            final String[] titles = configuration.getTitles();
             final boolean layoutChanged = configuration.isLayoutChanged();
             final boolean titleChanged = configuration.isTitleChanged();
 //            try {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if (layoutChanged) {
-                            reConfigureWall(newState, true);
-                        } else if (titleChanged) {
-                            changeTitles(titles);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    if (layoutChanged) {
+                        reConfigureWall(newState, true);
+                    } else if (titleChanged) {
+                        changeTitles(titles);
 
-                        }
                     }
-                });
+                }
+            });
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //            } catch (InvocationTargetException e) {
@@ -574,15 +573,21 @@ public class CardWallManager {
     public void copyToStickNote(CardPosition cardPosition) {
         CardWallCardCellClientState card = getCard(cardPosition.column, cardPosition.row);
 
-        StickyNoteCellServerState stickyNote = new org.jdesktop.wonderland.modules.rockwellcollins.stickynote.common.cell.StickyNoteCellServerState();
-        stickyNote.setNoteText(card.getTitle() + "\n" + card.getDetail());
-        Color colour = new Color(card.getColour());
-        String colourString = colour.getRed()+":" + colour.getGreen() + ":" + colour.getBlue();
-        stickyNote.setColor(colourString);
         try {
-            CellUtils.createCell(stickyNote);
-        } catch (CellCreationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            StickyNoteCellServerState stickyNote = new StickyNoteCellServerState();
+            stickyNote.setNoteText(card.getTitle() + "\n" + card.getDetail());
+            if (card.getColour() != 0) {
+                Color colour = new Color(card.getColour());
+                String colourString = colour.getRed() + ":" + colour.getGreen() + ":" + colour.getBlue();
+                stickyNote.setColor(colourString);
+            }
+            try {
+                CellUtils.createCell(stickyNote);
+            } catch (CellCreationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         //To change body of created methods use File | Settings | File Templates.
     }

@@ -105,7 +105,9 @@ public class CardWallCellImportExportHelper {
         out.append(comma);
         out.append(quote).append(card.getRowID()).append(quote);
         out.append(comma);
+        logger.warning("Colour to export " + card.getColour());
         out.append(quote).append(card.getColour()).append(quote);
+        logger.warning(out.toString());
         out.append(comma);
         out.append(quote).append(escapeForCSV(card.getTitle())).append(quote);
         out.append(comma);
@@ -240,7 +242,9 @@ public class CardWallCellImportExportHelper {
         card.setSectionID(Integer.parseInt(reader.get(SECTION_COL)));
         card.setColumnID(Integer.parseInt(reader.get(COLUMN_COL)));
         card.setRowID(Integer.parseInt(reader.get(ROW_COL)));
-        card.setColour(Integer.parseInt(reader.get(COLOUR_COL)));
+        int colour = Integer.parseInt(reader.get(COLOUR_COL));
+        logger.warning("colour - " + colour );
+        card.setColour(colour);
         card.setTitle(reader.get(TITLE_COL));
         card.setDetail(reader.get(DETAIL_COL));
         card.setPerson(reader.get(PERSON_COL));
