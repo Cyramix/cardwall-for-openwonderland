@@ -21,7 +21,9 @@ import com.sldrjp.wonderland.modules.cardwall.common.CardPosition;
 import com.sldrjp.wonderland.modules.cardwall.common.CardWallSyncMessage;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCellClientState;
+import org.jdesktop.wonderland.client.cell.Cell;
 import org.jdesktop.wonderland.client.cell.CellCache;
+import org.jdesktop.wonderland.client.cell.CellCacheBasicImpl;
 import org.jdesktop.wonderland.client.cell.annotation.UsesCellComponent;
 import org.jdesktop.wonderland.client.comms.WonderlandSession;
 import org.jdesktop.wonderland.client.contextmenu.ContextMenuActionListener;
@@ -41,6 +43,8 @@ import org.jdesktop.wonderland.modules.appbase.client.cell.App2DCell;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -148,6 +152,29 @@ public class CardWallCell extends App2DCell {
         }
     }
 
+    public List<CardWallCell> getCardWalls() {
+        CellCache cache = this.getCellCache();
+        List<CardWallCell> cardWallCells = new ArrayList<CardWallCell>();
+        if (cache instanceof CellCacheBasicImpl) {
+            CellCacheBasicImpl basicCache = (CellCacheBasicImpl) cache;
+            Cell[] cells = basicCache.getCells();
+            for (int i = 0; i < cells.length; i++) {
+
+                Cell cell = cells[i];
+                if (cell instanceof CardWallCell) {
+                    if (!cell.equals(this)) {
+                        cardWallCells.add((CardWallCell) cell);
+                        logger.warning(cell.getName() + " " + cell.getClass());
+                    }
+
+                }
+
+            }
+        }
+
+        return cardWallCells;
+    }
+
 
     public void sendMessage(int messageType, CardPosition originalPosition, CardWallCardCellClientState card) {
         logger.fine("Sending message - " + messageType + " " + card);
@@ -163,13 +190,13 @@ public class CardWallCell extends App2DCell {
         return message;
     }
 
-       public void sendMessage(int messageType, CardWallCellClientState state) {
+    public void sendMessage(int messageType, CardWallCellClientState state) {
         logger.fine("Sending message - " + messageType + " " + state.toString());
         CardWallSyncMessage message = prepareMessage(messageType, state);
         commComponent.sendMessage(message);
     }
 
-    protected CardWallSyncMessage prepareMessage(int messageType,CardWallCellClientState state) {
+    protected CardWallSyncMessage prepareMessage(int messageType, CardWallCellClientState state) {
         CardWallSyncMessage message = new CardWallSyncMessage();
         message.setMessageType(messageType);
         message.setClientState(state);
@@ -182,7 +209,7 @@ public class CardWallCell extends App2DCell {
         commComponent.sendMessage(message);
     }
 
-       protected CardWallSyncMessage prepareMessage(int messageType, int position, String text) {
+    protected CardWallSyncMessage prepareMessage(int messageType, int position, String text) {
         CardWallSyncMessage message = new CardWallSyncMessage();
         message.setMessageType(messageType);
         message.setSection(position);
@@ -204,7 +231,7 @@ public class CardWallCell extends App2DCell {
 //                    new SimpleContextMenuItem(
 //                            BUNDLE.getString("Import_data"), null,
 //                            new CardWallContextImportMenuListener()),
-                      new SimpleContextMenuItem(
+                    new SimpleContextMenuItem(
                             BUNDLE.getString("menu.configure"), null,
                             new CardWallContextConfigureMenuListener())
             };

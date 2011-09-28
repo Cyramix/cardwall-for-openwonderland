@@ -59,4 +59,7 @@ public interface MasterPanel {
     void removeAndRepaint();
 
     void reconfigurePanel(CardWallCellClientState clientState);
+
+    Container getParent();
+
 }

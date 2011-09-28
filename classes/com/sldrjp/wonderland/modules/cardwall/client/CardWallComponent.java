@@ -80,6 +80,7 @@ public class CardWallComponent extends CellComponent{
 
     public void sendMessage (CardWallSyncMessage message) {
         channelComp.send(message);
+
     }
 
 }

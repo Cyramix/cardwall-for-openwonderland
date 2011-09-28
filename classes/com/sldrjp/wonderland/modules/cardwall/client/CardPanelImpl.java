@@ -119,6 +119,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         yellowColour = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         copyToStickyNote = new javax.swing.JMenuItem();
+        copyToCardWall = new javax.swing.JMenuItem();
         copyTo = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         deleteItem = new javax.swing.JMenuItem();
@@ -195,6 +196,15 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
             }
         });
         jPopupMenu1.add(copyToStickyNote);
+
+        copyToCardWall.setText(BUNDLE.getString("cardPanel.menu.copyToCardWall"));
+        copyToCardWall.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyToCardWallActionPerformed(evt);
+            }
+        });
+        // @todo
+//        jPopupMenu1.add(copyToCardWall);
 
         setBackground(new java.awt.Color(250, 245, 219));
         setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -348,6 +358,10 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
         cardWallManager.copyToStickNote(cardPosition);
     }//GEN-LAST:event_deleteItemActionPerformed
 
+    private void copyToCardWallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemActionPerformed
+        cardWallManager.copyToCardWall(cardPosition);
+    }//GEN-LAST:event_deleteItemActionPerformed
+
     private void deleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemActionPerformed
         cardWallManager.deleteCard(cardPosition);
     }//GEN-LAST:event_deleteItemActionPerformed
@@ -416,6 +430,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
     private javax.swing.JMenuItem yellowColour;
     private javax.swing.JMenuItem copyToStickyNote;
     private javax.swing.JMenuItem copyTo;
+    private javax.swing.JMenuItem copyToCardWall;
     // End of variables declaration//GEN-END:variables
 
 }

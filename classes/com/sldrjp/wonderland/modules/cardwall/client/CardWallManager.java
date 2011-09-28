@@ -33,6 +33,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -42,6 +43,8 @@ import java.util.logging.Logger;
  * Time: 9:54 PM
  * To change this template use File | Settings | File Templates.
  */
+
+
 public class CardWallManager {
 
     private CardWallCell cell;
@@ -50,6 +53,8 @@ public class CardWallManager {
     private List<Section> sections = null;
     MasterPanel masterPanel;
 
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
+            "com/sldrjp/wonderland/modules/cardwall/client/resources/Bundle");
 
     private List<SectionHeader> sectionHeaders = null;
 
@@ -590,5 +595,24 @@ public class CardWallManager {
             e.printStackTrace();
         }
         //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public void copyToCardWall(CardPosition cardPosition) {
+
+        List<CardWallCell> cardWallCells = cell.getCardWalls();
+
+        if (cardWallCells.size() > 0) {
+            String[] cardWallTitles = new String[cardWallCells.size()];
+
+            for (int i = 0; i < cardWallCells.size(); i++) {
+                CardWallCell cardWallCell = cardWallCells.get(i);
+                cardWallTitles[i] = cardWallCell.getName();
+            }
+
+            JOptionPane.showInputDialog(masterPanel.getParent(), BUNDLE.getString("copyToCardWall.question"),
+                    BUNDLE.getString("copyToCardWall.title"), JOptionPane.QUESTION_MESSAGE, null,
+                    cardWallTitles, cardWallTitles[0]);
+
+        }
     }
 }
