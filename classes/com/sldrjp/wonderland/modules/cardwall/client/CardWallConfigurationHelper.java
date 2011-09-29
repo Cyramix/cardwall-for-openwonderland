@@ -93,14 +93,14 @@ public class CardWallConfigurationHelper {
                 }
             } else {
                 // make sure this section can be deleted
-                if (originalState.getSectionStates().get(i).getNumberOfColumns() > 0) {
+                if (!originalState.getSectionStates().get(i).isCanDelete()) {
                     throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_CANNOT_DELETE_SECTION);
                 }
             }
         }
         if (numberOfSectionsWithColumns != numberOfSections) {
             changed = false;
-            throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NUMBER_COLUMNS_ERROR);
+            throw new CardWallDialogDataException(CardWallDialogDataException.CARDWALL_CONFIGURATION_NUMBER_SECTIONS_ERROR);
         }
 
         for (int i = 0; i < numberOfSections; i++) {

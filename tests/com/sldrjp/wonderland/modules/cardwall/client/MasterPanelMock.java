@@ -184,4 +184,8 @@ public class MasterPanelMock implements MasterPanel {
     public void reconfigurePanel(CardWallCellClientState clientState) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public Container getParent() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
