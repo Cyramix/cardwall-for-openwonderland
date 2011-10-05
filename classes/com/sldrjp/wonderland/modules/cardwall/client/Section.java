@@ -120,4 +120,8 @@ public class Section {
         selectCard.newCard(cardState); // always add to the end
 
     }
+
+    public String getTitle() {
+            return state.getSectionTitle();
+    }
 }

@@ -204,7 +204,7 @@ public class CardPanelImpl extends javax.swing.JPanel implements ActionListener,
             }
         });
         // @todo
-//        jPopupMenu1.add(copyToCardWall);
+        jPopupMenu1.add(copyToCardWall);
 
         setBackground(new java.awt.Color(250, 245, 219));
         setBorder(javax.swing.BorderFactory.createEtchedBorder());

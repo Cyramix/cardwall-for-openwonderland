@@ -175,6 +175,24 @@ public class CardWallCell extends App2DCell {
         return cardWallCells;
     }
 
+    public List <Section> getSections(){
+        return cardWallManager.getSections();
+
+    }
+
+    public void addCard(int sectionNumber, CardWallCardCellClientState cardState) {
+
+        CardWallCardCellClientState workingState = cardWallManager.addCard(sectionNumber);
+        if (workingState != null) {
+            workingState.setTitle(cardState.getTitle());
+            workingState.setDetail(cardState.getDetail());
+            workingState.setPerson(cardState.getPerson());
+            workingState.setColour(cardState.getColour());
+            workingState.setPoints(cardState.getPoints());
+            cardWallManager.updateCard(workingState);
+        }
+    }
+
 
     public void sendMessage(int messageType, CardPosition originalPosition, CardWallCardCellClientState card) {
         logger.fine("Sending message - " + messageType + " " + card);

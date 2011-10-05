@@ -77,6 +77,8 @@ public class CardWallWindow extends WindowSwing {
                 public void run() {
                     // This must be invoked on the AWT Event Dispatch Thread
                     masterPanel = new MasterPanelImpl(cell, clientState);
+                    JmeClientMain.getFrame().getCanvas3DPanel().add(masterPanel);
+                    setComponent(masterPanel);
                     logger.warning("masterPanel constructor completed");
                     cardWallManager = new CardWallManager(cell, clientState, masterPanel);
                     logger.warning("cardWallManager constructor completed");
@@ -95,9 +97,14 @@ public class CardWallWindow extends WindowSwing {
             throw new RuntimeException(ex);
         }
 
-        // Parent to Wonderland main window for proper focus handling
-        JmeClientMain.getFrame().getCanvas3DPanel().add(masterPanel);
-        setComponent(masterPanel);
+//        // Parent to Wonderland main window for proper focus handling
+//        JmeClientMain.getFrame().getCanvas3DPanel().add(masterPanel);
+//        SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                setComponent(masterPanel);
+//            }
+//        });
+
         logger.warning("completed");
 //        JmeClientMain.getFrame().getCanvas3DPanel().setMinimumSize(new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()));
 

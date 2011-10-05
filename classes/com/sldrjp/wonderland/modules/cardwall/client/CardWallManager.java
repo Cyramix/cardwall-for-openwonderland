@@ -32,6 +32,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -74,7 +75,7 @@ public class CardWallManager {
      *
      * @param sectionSelected
      */
-    public void addCard(int sectionSelected) {
+    public CardWallCardCellClientState addCard(int sectionSelected) {
         // check if section exists
         if ((sectionSelected < 0) || (sectionSelected >= sections.size())) {
             throw new CardWallException(CardWallException.SECTION_OUT_OF_RANGE_MSG + " " + Integer.toString(sectionSelected), CardWallException.SECTION_OUT_OF_RANGE, Integer.toString(sectionSelected));
@@ -96,9 +97,10 @@ public class CardWallManager {
             masterPanel.showCard(card, this);
             state.getCards().add(card.getCardState());
             cell.sendMessage(CardWallSyncMessage.ADD_CARD, null, cardState);
+            return cardState;
 
         }
-
+        return null;
 
     }
 
@@ -602,17 +604,58 @@ public class CardWallManager {
         List<CardWallCell> cardWallCells = cell.getCardWalls();
 
         if (cardWallCells.size() > 0) {
-            String[] cardWallTitles = new String[cardWallCells.size()];
+            List <CardWallSection> cardWallTitles = new ArrayList<CardWallSection>();
 
             for (int i = 0; i < cardWallCells.size(); i++) {
                 CardWallCell cardWallCell = cardWallCells.get(i);
-                cardWallTitles[i] = cardWallCell.getName();
+
+                List <Section> sections =  cardWallCell.getSections();
+                for (int j = 0; j < sections.size(); j++) {
+                    Section section = sections.get(j);
+                    CardWallSection cardWallSection = new CardWallSection(cardWallCell, section);
+                    cardWallTitles.add(cardWallSection);
+                }
+
             }
 
-            JOptionPane.showInputDialog(masterPanel.getParent(), BUNDLE.getString("copyToCardWall.question"),
+            CardWallSection chosenValue = (CardWallSection) JOptionPane.showInputDialog(masterPanel.getParent(), BUNDLE.getString("copyToCardWall.question"),
                     BUNDLE.getString("copyToCardWall.title"), JOptionPane.QUESTION_MESSAGE, null,
-                    cardWallTitles, cardWallTitles[0]);
+                    cardWallTitles.toArray(), cardWallTitles.get(0));
 
+            if (chosenValue != null) {
+                CardWallCardCellClientState cardToCopy = getCard(cardPosition.column,cardPosition.row);
+                if (cardToCopy != null) {
+                    chosenValue.getCardWallCell().addCard(chosenValue.getSection().getSectionNumber(), cardToCopy.getCopyAsClientState());
+                }
+            }
+
+        }
+    }
+
+    public List<Section> getSections() {
+            return sections;
+    }
+
+    private class CardWallSection {
+        private CardWallCell cardWallCell;
+        private Section section;
+
+        private CardWallSection(CardWallCell cardWallCell, Section section) {
+            this.cardWallCell = cardWallCell;
+            this.section = section;
+        }
+
+        public CardWallCell getCardWallCell() {
+            return cardWallCell;
+        }
+
+        public Section getSection() {
+            return section;
+        }
+
+        @Override
+        public String toString() {
+            return cardWallCell.getName() + " - " + section.getTitle();
         }
     }
 }
