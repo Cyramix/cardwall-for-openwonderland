@@ -79,6 +79,7 @@ public class CardWallWindow extends WindowSwing {
                     masterPanel = new MasterPanelImpl(cell, clientState);
                     JmeClientMain.getFrame().getCanvas3DPanel().add(masterPanel);
                     setComponent(masterPanel);
+                    repaint();
                     logger.warning("masterPanel constructor completed");
                     cardWallManager = new CardWallManager(cell, clientState, masterPanel);
                     logger.warning("cardWallManager constructor completed");
@@ -89,7 +90,8 @@ public class CardWallWindow extends WindowSwing {
                     logger.warning("cardwallmanager populatedata completed");
                     masterPanel.setMinimumSize(new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()));
                     logger.fine("initial size - " + new Dimension(clientState.getPreferredWidth(), clientState.getPreferredHeight()).toString());
-
+                    repaint();
+                    logger.warning("cardwallmanager completed invokeAndWait");
 
                 }
             });

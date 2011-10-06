@@ -117,8 +117,14 @@ public class CardWallCell extends App2DCell {
 
                     // Both the app and the user want this window to be visible
 //                    window.setSize(CardWallDefaultConfiguration.preferredWidth, CardWallDefaultConfiguration.preferredHeight);
-                    window.setVisibleApp(true);
-                    window.setVisibleUser(this, true);
+                    final CardWallCell  cell = this;
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            window.setVisibleApp(true);
+                            window.setVisibleUser(cell, true);
+                        }
+                    });
+
                 }
                 break;
 
@@ -175,7 +181,7 @@ public class CardWallCell extends App2DCell {
         return cardWallCells;
     }
 
-    public List <Section> getSections(){
+    public List<Section> getSections() {
         return cardWallManager.getSections();
 
     }
@@ -190,6 +196,7 @@ public class CardWallCell extends App2DCell {
             workingState.setColour(cardState.getColour());
             workingState.setPoints(cardState.getPoints());
             cardWallManager.updateCard(workingState);
+            sendMessage(CardWallSyncMessage.CHANGE_TEXT, null, workingState);
         }
     }
 
