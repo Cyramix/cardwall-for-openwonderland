@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2010, 2011  Service de logiciel et developpement R.J. Potter (Robert J Potter)
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<project name="card-wall" default="dist" basedir=".">
+    <!-- current directory needed in all scripts -->
+    <dirname property="current.dir" file="${ant.file.card-wall}"/>
+
+    <!-- import properties from the common modules properties. These values
+         may overwrite some values in my.module.properties, such as the
+         location of the Wonderland directory in the case of the entire modules
+         directory being checked out instead of an individual file -->
+    <property file="${current.dir}/../modules-unstable.properties"/>
+
+    <!-- import properties for this module -->
+    <property file="${current.dir}/my.module.properties"/>
+
+    <property name="modules.dir" location="${wonderland.dir}/modules"/>
+    <property name="module.src" value="${module.plugin.src}"/>
+    <property name="module.jarname" value="${module.name}"/>
+
+    <!-- import common build file -->
+    <import file="${modules.dir}/build-tools/build-scripts/module-build.xml"/>
+
+    <property name="appbase.dir" value="${wonderland.dir}/modules/foundation/appbase"/>
+
+    <pathconvert property="module-common.classpath">
+        <path location="${appbase.dir}/build/client/appbase-client.jar"/>
+        <path location="${appbase.dir}/build/client/appbase-client-cell.jar"/>
+    </pathconvert>
+    <property name="module-client.classpath" value="${module-common.classpath}"/>
+    <property name="module-server.classpath" value="${appbase.dir}/build/server/appbase-server.jar"/>
+
+    <target name="build" depends="-module-init, -module-compile-common,
+                                                -module-compile-server,
+                                                -module-compile-client"/>
+
+    <target name="dist" depends="build">
+        <mkdir dir="${module.dist.dir}"/>
+
+        <module name="${module.name}" majorVersion="${module.version.major}" minorVersion="${module.version.minor}" miniversion="${module.version.mini}" jarfile="${module.dist.dir}/${module.name}.jar" moduleDescription="${module.description}" builddir="${build.dir}">
+            <client>
+                <clientjar name="${module.name}-client" basedir="${build.classes.dir}">
+                    <include name="${module.src}/client/**"/>
+                    <include name="${module.src}/common/**"/>
+                    <fileset dir="${current.dir}/src.hld/classes">
+                        <include name="${module.src}/client/**/*.properties"/>
+                        <include name="${module.src}/client/**/*.png"/>
+                    </fileset>
+                </clientjar>
+            </client>
+
+            <server>
+                <serverjar name="${module.name}-server" basedir="${build.classes.dir}">
+                    <include name="${module.src}/server/**"/>
+                    <include name="${module.src}/common/**"/>
+                </serverjar>
+            </server>
+
+            <art dir="${current.dir}/art"/>
+        </module>
+    </target>
+
+    <target name="deploy" depends="dist, -module-deploy"/>
+    <target name="clean" depends="-module-clean"/>
+</project>
