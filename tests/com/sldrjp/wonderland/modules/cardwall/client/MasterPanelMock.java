@@ -50,7 +50,7 @@ public class MasterPanelMock implements MasterPanel {
 
 
 
-    public void showCard(Card card, CardWallManager cardWallManager) {
+    public void showCard(Card card) {
         showCardCalled++;
         lastCardX = card.getCardState().getColumnID();
         lastCardY = card.getCardState().getRowID();

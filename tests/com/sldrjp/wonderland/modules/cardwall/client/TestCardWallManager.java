@@ -70,9 +70,9 @@ public class TestCardWallManager {
 
     @Test
     public void testAddCardToSection() {
-        manager.addCard(1);
+        manager.requestNewCard(1);
         CardWallSyncMessage message = cell.getMessages().get(0);
-        assertEquals("generated message type incorrect", CardWallSyncMessage.ADD_CARD, message.getMessageType());
+        assertEquals("generated message type incorrect", CardWallSyncMessage.REQUEST_NEW_CARD, message.getMessageType());
         // we need to get the uniqueID to make the comparison work
         String uniqueId = message.getCardClientState().getUniqueID();
         CardWallCardCellClientState expectedCard = new CardWallCardCellClientState(1, 2, 0, 0, 0, null, null, null, null, uniqueId);
@@ -93,7 +93,7 @@ public class TestCardWallManager {
     public void testAddAdditionalCardToSection() {
         CardWallCardCellClientState cardState = new CardWallCardCellClientState(0, -1, -1, -1, 0, "Test", null, null, null, null);
         manager.getSection(0).getAdditionalCards().add(cardState);
-        manager.addCard(0, cardState);
+        manager.requestRestoreCard(0, cardState);
         CardWallSyncMessage message = cell.getMessages().get(0);
         assertEquals("generated message type incorrect", CardWallSyncMessage.MOVE_CARD, message.getMessageType());
 
@@ -101,7 +101,7 @@ public class TestCardWallManager {
 
     private void checkSectionRange(CardWallManager helper, int sectionSelected) {
         try {
-            helper.addCard(sectionSelected);
+            helper.requestNewCard(sectionSelected);
             fail("Exception should have been thrown - out of range");
         } catch (CardWallException e) {
             assertEquals("Wrong exception ID", CardWallException.SECTION_OUT_OF_RANGE, e.getErrorCode());
