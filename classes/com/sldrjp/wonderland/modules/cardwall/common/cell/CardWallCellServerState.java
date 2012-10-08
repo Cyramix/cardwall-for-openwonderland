@@ -115,4 +115,8 @@ public class CardWallCellServerState extends App2DCellServerState {
     public void setCards(List <CardWallCardCellServerState> cards) {
         this.cards = (List) cards;
     }
+    @XmlTransient
+    public List<CardWallSectionCellServerState> getSections() {
+        return sections;
+    }
 }

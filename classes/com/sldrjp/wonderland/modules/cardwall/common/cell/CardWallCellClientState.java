@@ -118,5 +118,4 @@ public class CardWallCellClientState extends App2DCellClientState implements Ser
 
     }
 
-
 }

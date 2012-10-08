@@ -61,6 +61,10 @@ public class CardWallMessageHandler {
             case CardWallSyncMessage.COMPLETE_STATE:
                 cardWallManager.reConfigureWall(cardWallMessage.getClientState(), false);
                 break;
+
+            case CardWallSyncMessage.RESTORE_CARD:
+                cardWallManager.restoreCard(cardWallMessage.getCardClientState());
+                break;
         }
         //@todo process remaining message types
     }

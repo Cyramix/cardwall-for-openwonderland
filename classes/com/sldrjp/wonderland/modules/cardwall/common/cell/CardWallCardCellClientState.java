@@ -181,7 +181,9 @@ public class CardWallCardCellClientState implements Serializable, StateConvertab
 
     @Override
     public String toString() {
-        return "CardWallCardCellClientState" +","+sectionID + "," + columnID + "," + rowID + "," + colour + "," + title + "," + detail;
+        return "CardWallCardCellClientState: Section ID: " + "," + sectionID + ", Column ID: " + columnID
+                + ", Relative Column ID: " + relativeColumnID + ", Row ID: " + rowID + ", Colour: "
+                + colour + ", Title: " + title + ", Detail: " + detail;
     }
 
     public boolean isVisible() {
@@ -196,7 +198,11 @@ public class CardWallCardCellClientState implements Serializable, StateConvertab
     }
 
     public void setUniqueID(String uniqueID) {
-        this.uniqueID = uniqueID;
+        if (uniqueID == null) {
+            this.uniqueID = String.valueOf(UUID.randomUUID());
+        } else {
+            this.uniqueID = uniqueID;
+        }
     }
 
     public void updateCard(CardWallCardCellClientState card) {

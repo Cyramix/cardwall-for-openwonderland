@@ -47,6 +47,7 @@ public class CardWallCellFactory implements CellFactorySPI {
         if (properties != null) {
             String uri = properties.getProperty("content-uri");
             if (uri != null) {
+
                 clientState = (new CardWallCellImportExportHelper()).populateStateFromURI(uri);
             }
         }

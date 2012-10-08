@@ -27,11 +27,8 @@
 
 package com.sldrjp.wonderland.modules.cardwall.client;
 
-import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -125,7 +122,7 @@ public class SectionHeaderImpl extends javax.swing.JPanel implements SectionHead
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        cardWallManager.addCard(section);
+        cardWallManager.requestNewCard(section);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

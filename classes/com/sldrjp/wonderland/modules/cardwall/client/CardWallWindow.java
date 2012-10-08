@@ -119,4 +119,6 @@ public class CardWallWindow extends WindowSwing {
     public CardWallManager getCardWallManager() {
         return cardWallManager;
     }
+
+
 }

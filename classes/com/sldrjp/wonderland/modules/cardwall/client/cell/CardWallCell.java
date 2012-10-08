@@ -38,6 +38,7 @@ import org.jdesktop.wonderland.common.ExperimentalAPI;
 import org.jdesktop.wonderland.common.cell.CellID;
 import org.jdesktop.wonderland.common.cell.CellStatus;
 import org.jdesktop.wonderland.common.cell.state.CellClientState;
+import org.jdesktop.wonderland.common.messages.ResponseMessage;
 import org.jdesktop.wonderland.modules.appbase.client.cell.App2DCell;
 
 import javax.swing.*;
@@ -55,7 +56,6 @@ public class CardWallCell extends App2DCell {
      * The (singleton) window created by the Swing example app
      */
     private CardWallWindow window;
-    private MasterPanel masterPanel;
     private CardWallManager cardWallManager;
     private CardWallMessageHandler cardWallMessageHandler = null;
     private CardWallCellClientState clientState;
@@ -92,7 +92,11 @@ public class CardWallCell extends App2DCell {
             case ACTIVE:
                 if (increasing) {
                     commComponent = getComponent(CardWallComponent.class);
-                    CardWallApp app = new CardWallApp(BUNDLE.getString("title.cardWall"), clientState.getPixelScale());
+                    if (getName() == null) {
+                        setName(BUNDLE.getString("title.cardWall"));
+                    }
+                    logger.severe("card wall name " + getName());
+                    CardWallApp app = new CardWallApp(getName(), clientState.getPixelScale());
                     logger.fine("pixel scale " + clientState.getPixelScale());
                     setApp(app);
 
@@ -104,7 +108,6 @@ public class CardWallCell extends App2DCell {
                         logger.fine("CardWallCell width " + clientState.getPreferredWidth() + ", numberOfColumns = " + clientState.getNumberOfColumns());
                         window = new CardWallWindow(this, app, clientState.getPreferredWidth(),
                                 clientState.getPreferredHeight(), true, pixelScale, clientState);
-                        masterPanel = window.getMasterPanel();
                         cardWallManager = window.getCardWallManager();
                         cardWallMessageHandler = new CardWallMessageHandler(cardWallManager);
 
@@ -117,7 +120,7 @@ public class CardWallCell extends App2DCell {
 
                     // Both the app and the user want this window to be visible
 //                    window.setSize(CardWallDefaultConfiguration.preferredWidth, CardWallDefaultConfiguration.preferredHeight);
-                    final CardWallCell  cell = this;
+                    final CardWallCell cell = this;
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             window.setVisibleApp(true);
@@ -153,31 +156,38 @@ public class CardWallCell extends App2DCell {
     public void processMessage(final CardWallSyncMessage cardWallMessage) {
         logger.fine("Receiving message - " + cardWallMessage.getMessageType());
         WonderlandSession session = getCellCache().getSession();
-        if (!cardWallMessage.getSenderID().equals(session.getID())) {
+        if ((cardWallMessage.getMessageType() == CardWallSyncMessage.ADD_CARD) ||
+                (cardWallMessage.getMessageType() == CardWallSyncMessage.MOVE_CARD) ||
+                (cardWallMessage.getMessageType() == CardWallSyncMessage.RESTORE_CARD)) {
             cardWallMessageHandler.handleMessage(cardWallMessage);
+        } else {
+            if (!cardWallMessage.getSenderID().equals(session.getID())) {
+                cardWallMessageHandler.handleMessage(cardWallMessage);
+
+            }
         }
     }
 
+    /**
+     * Requests a list of the current CardWalls in the system
+     *
+     * @return List of CardWalls cells (except this CardWall)
+     */
     public List<CardWallCell> getCardWalls() {
         CellCache cache = this.getCellCache();
         List<CardWallCell> cardWallCells = new ArrayList<CardWallCell>();
         if (cache instanceof CellCacheBasicImpl) {
             CellCacheBasicImpl basicCache = (CellCacheBasicImpl) cache;
             Cell[] cells = basicCache.getCells();
-            for (int i = 0; i < cells.length; i++) {
-
-                Cell cell = cells[i];
+            for (Cell cell : cells) {
                 if (cell instanceof CardWallCell) {
                     if (!cell.equals(this)) {
                         cardWallCells.add((CardWallCell) cell);
                         logger.warning(cell.getName() + " " + cell.getClass());
                     }
-
                 }
-
             }
         }
-
         return cardWallCells;
     }
 
@@ -186,18 +196,19 @@ public class CardWallCell extends App2DCell {
 
     }
 
-    public void addCard(int sectionNumber, CardWallCardCellClientState cardState) {
+    /**
+     * Inserts an existing card typically from another card wall in the section
+     *
+     * @param sectionNumber
+     * @param cardState
+     */
+    public void insertCard(int sectionNumber, CardWallCardCellClientState cardState) {
 
-        CardWallCardCellClientState workingState = cardWallManager.addCard(sectionNumber);
-        if (workingState != null) {
-            workingState.setTitle(cardState.getTitle());
-            workingState.setDetail(cardState.getDetail());
-            workingState.setPerson(cardState.getPerson());
-            workingState.setColour(cardState.getColour());
-            workingState.setPoints(cardState.getPoints());
-            cardWallManager.updateCard(workingState);
-            sendMessage(CardWallSyncMessage.CHANGE_TEXT, null, workingState);
-        }
+
+        CardWallCardCellClientState workingState = new CardWallCardCellClientState(
+                sectionNumber, -1, -1, -1, cardState.getColour(), cardState.getTitle(), cardState.getDetail(),
+                cardState.getPerson(), cardState.getPoints(), null);
+        sendMessage(CardWallSyncMessage.INSERT_CARD, null, workingState);
     }
 
 
@@ -280,7 +291,7 @@ public class CardWallCell extends App2DCell {
                 try {
                     helper.exportToCSV(jChooser.getSelectedFile());
                 } catch (IOException e) {
-                    logger.severe("IO error during export to csv \n" + e.getStackTrace());  //To change body of catch statement use File | Settings | File Templates.
+                    logger.severe("IO error during export to csv \n" + e.getStackTrace());
                 }
             }
 

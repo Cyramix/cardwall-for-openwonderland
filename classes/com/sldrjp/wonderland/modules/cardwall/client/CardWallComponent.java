@@ -24,6 +24,7 @@ import org.jdesktop.wonderland.client.cell.ChannelComponent;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
 import org.jdesktop.wonderland.common.cell.CellStatus;
 import org.jdesktop.wonderland.common.cell.messages.CellMessage;
+import org.jdesktop.wonderland.common.messages.ResponseMessage;
 
 /**
  * Created by IntelliJ IDEA.
@@ -81,6 +82,10 @@ public class CardWallComponent extends CellComponent{
     public void sendMessage (CardWallSyncMessage message) {
         channelComp.send(message);
 
+    }
+
+    public ResponseMessage sendAndWaitMessage (CardWallSyncMessage message) throws InterruptedException {
+        return channelComp.sendAndWait(message);
     }
 
 }

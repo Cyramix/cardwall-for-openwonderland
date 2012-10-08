@@ -49,6 +49,11 @@ public class CardWallSyncMessage extends CellMessage implements Serializable {
     public static final int DELETE_CARD = 6;
     public static final int UPDATE_SERVER_CARD_STATE_ONLY = -7;
     public static final int UPDATE_SECTION_TITLE = 8;
+    public static final int REQUEST_NEW_CARD = 10;
+    public static final int INSERT_CARD = 11;
+    public static final int REQUEST_MOVE_CARD = 12;
+    public static final int RESTORE_CARD = 13;
+    public static final int REQUEST_RESTORE_CARD = 14;
 
     public CardWallSyncMessage() {
         this.messageType = CREATE_DEFAULT;

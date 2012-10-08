@@ -140,13 +140,13 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
      * Creates a CardPanelImpl from the Card cell client state, adds it to the master panel and sets the position correctly
      *
      * @param card
-     * @param cardWallManager
+
      */
-    public void showCard(final Card card, CardWallManager cardWallManager) {
+    public void showCard(final Card card) {
 
 
         final CardPanelImpl cardPanel = new CardPanelImpl();
-        cardPanel.setMasterPanel(this, cardWallManager);
+        cardPanel.setMasterPanel(this, this.getCardWallManager());
         card.setCardPanel(cardPanel);
 
 
@@ -262,7 +262,7 @@ public class MasterPanelImpl extends javax.swing.JPanel implements MasterPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if (panel == null) {
-                    showCard(card, cardWallManager);
+                    showCard(card);
 
                 } else {
 

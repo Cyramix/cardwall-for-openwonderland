@@ -16,10 +16,12 @@
 
 package com.sldrjp.wonderland.modules.cardwall.server.cell;
 
+import com.sldrjp.wonderland.modules.cardwall.common.CardWallResponseMessage;
 import com.sldrjp.wonderland.modules.cardwall.common.CardWallSyncMessage;
 import com.sun.sgs.app.ManagedReference;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
 import org.jdesktop.wonderland.common.cell.messages.CellMessage;
+import org.jdesktop.wonderland.common.messages.MessageID;
 import org.jdesktop.wonderland.server.cell.AbstractComponentMessageReceiver;
 import org.jdesktop.wonderland.server.cell.CellComponentMO;
 import org.jdesktop.wonderland.server.cell.CellMO;
@@ -27,6 +29,9 @@ import org.jdesktop.wonderland.server.cell.ChannelComponentMO;
 import org.jdesktop.wonderland.server.cell.annotation.UsesCellComponentMO;
 import org.jdesktop.wonderland.server.comms.WonderlandClientID;
 import org.jdesktop.wonderland.server.comms.WonderlandClientSender;
+
+import java.math.BigInteger;
+import java.util.logging.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +42,8 @@ import org.jdesktop.wonderland.server.comms.WonderlandClientSender;
  */
 @ExperimentalAPI
 public class CardWallCellComponentMO extends CellComponentMO {
+
+    private static Logger logger = Logger.getLogger(CardWallCellComponentMO.class.getName());
 
     @UsesCellComponentMO(ChannelComponentMO.class)
     private ManagedReference<ChannelComponentMO> channelComponentRef = null;
@@ -62,6 +69,7 @@ public class CardWallCellComponentMO extends CellComponentMO {
     }
 
     public void sendAllClients(WonderlandClientID clientID, CardWallSyncMessage message) {
+       logger.fine("sending " + message.getMessageType());
        ChannelComponentMO channelComponent = channelComponentRef.getForUpdate();
         channelComponent.sendAll(clientID, message);
     }
@@ -75,6 +83,8 @@ public class CardWallCellComponentMO extends CellComponentMO {
         public void messageReceived(WonderlandClientSender sender, WonderlandClientID clientID, CellMessage cellMessage) {
             CardWallSyncMessage cardWallMessage = (CardWallSyncMessage) cellMessage;
             ((CardWallCellMO) getCell()).receivedMessage(sender,clientID,cardWallMessage);
+
+
         }
     }
 }

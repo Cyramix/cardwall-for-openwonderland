@@ -30,11 +30,8 @@ package com.sldrjp.wonderland.modules.cardwall.client;
 import com.sldrjp.wonderland.modules.cardwall.common.cell.CardWallCardCellClientState;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * @author Bob
@@ -135,9 +132,7 @@ public class SelectCardImpl extends javax.swing.JPanel implements SelectCard {
     private void buttonActionPerformed(ActionEvent evt) {
         CardStateWrapper selectedItem = (CardStateWrapper) comboBox.getSelectedItem();
         if (selectedItem != null) {
-            if (manager.addCard(sectionNumber, selectedItem.getState())) {
-                comboBox.removeItem(selectedItem);
-            }
+            manager.requestRestoreCard(sectionNumber, selectedItem.getState());
         }
     }
 

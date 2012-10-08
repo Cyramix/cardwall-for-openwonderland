@@ -30,7 +30,7 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public interface MasterPanel {
-    void showCard(Card card, CardWallManager cardWallManager);
+    void showCard(Card card);
 
     void removeCard(Card card);
 
