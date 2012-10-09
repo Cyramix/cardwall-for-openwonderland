@@ -16,6 +16,8 @@
 
 package com.sldrjp.wonderland.modules.cardwall.common.cell;
 
+import org.jdesktop.wonderland.modules.appbase.common.cell.App2DCellServerState;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -30,7 +32,7 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 @XmlRootElement(name = "cell")
-public class CardWallCardCellServerState  implements Serializable, StateConvertable {
+public class CardWallCardCellServerState  extends App2DCellServerState implements StateConvertable {
 
     @XmlElement(name = "title")
     public String title = null;
@@ -176,5 +178,10 @@ public class CardWallCardCellServerState  implements Serializable, StateConverta
 
     public void setUniqueID(String uniqueID) {
         this.uniqueID = uniqueID;
+    }
+
+    @Override
+    public String getServerClassName() {
+        return "com.sldrjp.wonderland.server.cell.CardWallCellMO";
     }
 }
